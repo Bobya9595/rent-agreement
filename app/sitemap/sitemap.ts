@@ -1,5 +1,5 @@
 export default function sitemap() {
-  const baseUrl = "https://YOUR_DOMAIN_HERE";
+  const baseUrl = "https://legalformat.in/";
 
   return [
     {
@@ -39,4 +39,5 @@ export default function sitemap() {
       priority: 0.3,
     },
   ];
+
 }
