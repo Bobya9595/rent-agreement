@@ -1,108 +1,114 @@
 import Link from "next/link";
 
-export default function Home() {
+export default function HomePage() {
+  const tools = [
+    {
+      title: "Rent Agreement Format",
+      description: "Create and download rent agreement instantly.",
+      href: "/rent-agreement-format",
+    },
+    {
+      title: "Affidavit Format",
+      description: "Generate affidavit document easily.",
+      href: "/affidavit-format",
+    },
+    {
+      title: "Salary Certificate Format",
+      description: "Generate professional salary certificate.",
+      href: "/salary-certificate-format",
+    },
+    {
+      title: "Experience Letter Format",
+      description: "Create experience letter instantly.",
+      href: "/experience-letter-format",
+    },
+    {
+      title: "NOC Letter Format",
+      description: "Generate No Objection Certificate easily.",
+      href: "/noc-letter-format",
+    },
+    {
+      title: "Leave & License Agreement",
+      description: "Create Leave & License agreement online.",
+      href: "/leave-license-agreement-format",
+    },
+    {
+      title: "Offer Letter Format",
+      description: "Generate professional offer letter.",
+      href: "/offer-letter-format",
+    },
+    {
+      title: "Resignation Letter Format",
+      description: "Create resignation letter instantly.",
+      href: "/resignation-letter-format",
+    },
+    {
+      title: "Relieving Letter Format",
+      description: "Generate professional relieving letter.",
+      href: "/relieving-letter-format",
+    },
+  ];
+
   return (
-    <main className="bg-gray-50 min-h-screen">
+    <main className="min-h-screen bg-gray-50">
 
-      {/* HERO */}
-      <section className="max-w-6xl mx-auto px-6 py-24 text-center">
-        <h1 className="text-5xl font-bold text-blue-700 mb-6 leading-tight">
-          Create Professional Legal Documents in Minutes
+      {/* HERO SECTION */}
+      <section className="text-center py-20 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+        <h1 className="text-5xl font-bold mb-6">
+          Legal Format India
         </h1>
-
-        <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-          Free online legal document generator for India. Instantly create rent agreements, affidavits, salary certificates, resignation letters and more.
+        <p className="text-lg max-w-2xl mx-auto mb-8">
+          Generate professional legal documents online for free.
+          Download instantly as PDF. Fast, simple and secure.
         </p>
 
-        <div className="flex justify-center gap-4">
-          <Link
-            href="/rent-agreement-format"
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
-          >
-            Start Generating
-          </Link>
+        <Link
+          href="/all-tools"
+          className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+        >
+          View All Tools
+        </Link>
+      </section>
 
-          <Link
-            href="/all-tools"
-            className="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50"
-          >
-            View All Tools
-          </Link>
+      {/* TOOLS GRID */}
+      <section className="max-w-6xl mx-auto py-16 px-6">
+        <h2 className="text-3xl font-bold text-center mb-12">
+          Popular Legal Tools
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {tools.map((tool, index) => (
+            <Link
+              key={index}
+              href={tool.href}
+              className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300"
+            >
+              <h3 className="text-xl font-semibold mb-2">
+                {tool.title}
+              </h3>
+              <p className="text-gray-600">
+                {tool.description}
+              </p>
+            </Link>
+          ))}
         </div>
       </section>
 
-      {/* FEATURE GRID */}
-      <section className="bg-white py-20">
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-10 text-center">
-          <div>
-            <h3 className="text-xl font-semibold mb-3">Instant PDF Download</h3>
-            <p className="text-gray-600">
-              Generate legally formatted documents and download them instantly.
-            </p>
-          </div>
+      {/* FOOTER CTA */}
+      <section className="bg-gray-900 text-white text-center py-16 px-6">
+        <h3 className="text-3xl font-bold mb-4">
+          Start Creating Documents Today
+        </h3>
+        <p className="mb-6">
+          100% Free. No signup required.
+        </p>
 
-          <div>
-            <h3 className="text-xl font-semibold mb-3">100% Free</h3>
-            <p className="text-gray-600">
-              No signup required. No hidden fees. Completely free to use.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-xl font-semibold mb-3">Made for India</h3>
-            <p className="text-gray-600">
-              Structured according to Indian legal document standards.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* TOOL PREVIEW */}
-      <section className="py-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Popular Legal Tools
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              ["Rent Agreement", "/rent-agreement-format"],
-              ["Affidavit Format", "/affidavit-format"],
-              ["Salary Certificate", "/salary-certificate-format"],
-              ["Experience Letter", "/experience-letter-format"],
-              ["Resignation Letter", "/resignation-letter-format"],
-              ["Relieving Letter", "/relieving-letter-format"],
-            ].map(([title, link]) => (
-              <Link
-                key={link}
-                href={link}
-                className="bg-white shadow-md p-6 rounded-lg hover:shadow-lg transition"
-              >
-                <h3 className="text-lg font-semibold mb-2">{title}</h3>
-                <p className="text-gray-600 text-sm">
-                  Generate professional {title.toLowerCase()} instantly.
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SEO CONTENT BLOCK */}
-      <section className="bg-white py-20">
-        <div className="max-w-4xl mx-auto px-6 text-gray-700 leading-relaxed">
-          <h2 className="text-2xl font-bold mb-6">
-            Free Legal Document Generator in India
-          </h2>
-
-          <p className="mb-4">
-            Legal Format India provides ready-to-use legal document formats for individuals, employees, landlords, tenants, and businesses. Our platform helps you create legally structured documents instantly without needing legal expertise.
-          </p>
-
-          <p>
-            Whether you need a rent agreement format, affidavit format, salary certificate, experience letter, or resignation letter, our tools simplify the process and provide downloadable PDF documents within seconds.
-          </p>
-        </div>
+        <Link
+          href="/all-tools"
+          className="bg-blue-600 px-8 py-3 rounded-lg hover:bg-blue-700 transition"
+        >
+          Explore All Tools
+        </Link>
       </section>
 
     </main>
