@@ -3,115 +3,96 @@
 import { useState } from "react";
 import { jsPDF } from "jspdf";
 
-export default function RentAgreement() {
+export default function RentAgreementPro() {
   const [landlord, setLandlord] = useState("");
   const [tenant, setTenant] = useState("");
   const [propertyAddress, setPropertyAddress] = useState("");
   const [rentAmount, setRentAmount] = useState("");
   const [deposit, setDeposit] = useState("");
-  const [duration, setDuration] = useState("");
+  const [duration, setDuration] = useState("11");
   const [date, setDate] = useState("");
+  const [agreementType, setAgreementType] = useState("Residential");
+  const [agreementText, setAgreementText] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const formatDate = (inputDate: string) => {
     if (!inputDate) return "____";
-    const options: Intl.DateTimeFormatOptions = {
+    return new Date(inputDate).toLocaleDateString("en-IN", {
       day: "numeric",
       month: "long",
       year: "numeric",
-    };
-    return new Date(inputDate).toLocaleDateString("en-IN", options);
+    });
   };
 
-  const agreementText = `
-                                RENT AGREEMENT
+  const generateBasicAgreement = () => {
+    const text = `
+RENT AGREEMENT (${agreementType})
 
-This Rent Agreement is made and executed on this ${formatDate(
-    date
-  )} at ___________.
+This Rent Agreement is executed on ${formatDate(date)}.
 
 BETWEEN
 
-Mr./Ms. ${landlord || "Landlord Name"}, hereinafter referred to as the
-"LANDLORD" (which expression shall mean and include his/her heirs, successors,
-legal representatives and assigns)
+Mr./Ms. ${landlord || "Landlord Name"} (LANDLORD)
 
 AND
 
-Mr./Ms. ${tenant || "Tenant Name"}, hereinafter referred to as the
-"TENANT" (which expression shall mean and include his/her heirs, successors,
-legal representatives and assigns).
+Mr./Ms. ${tenant || "Tenant Name"} (TENANT)
 
-WHEREAS the Landlord is the absolute owner of the property situated at:
-
-${propertyAddress || "Full Property Address Here"}
-
-NOW THIS AGREEMENT WITNESSETH AS FOLLOWS:
+PROPERTY ADDRESS:
+${propertyAddress || "Full Property Address"}
 
 1. TERM:
-The tenancy shall commence from ${formatDate(
-    date
-  )} for a period of ${duration || "11"} months.
+Tenancy shall commence from ${formatDate(
+      date
+    )} for a period of ${duration} months.
 
 2. RENT:
-The Tenant agrees to pay a monthly rent of ₹${
-    rentAmount || "________"
-  } (Rupees __________________ only) payable on or before the 5th day of every month.
+Monthly rent shall be ₹${rentAmount || "________"} payable before 5th of every month.
 
 3. SECURITY DEPOSIT:
-The Tenant has paid a refundable security deposit of ₹${
-    deposit || "________"
-  } (Rupees __________________ only).
+Tenant has paid ₹${deposit || "________"} refundable security deposit.
 
-4. USE OF PROPERTY:
-The property shall be used for residential purposes only.
+4. USE:
+Property shall be used for ${agreementType.toLowerCase()} purposes only.
 
-5. MAINTENANCE:
-The Tenant shall maintain the premises in good condition and shall not cause damage.
+5. TERMINATION:
+One month prior written notice required by either party.
 
-6. UTILITIES:
-Electricity, water, gas and other charges shall be borne by the Tenant.
-
-7. TERMINATION:
-Either party may terminate this agreement by giving one month's prior written notice.
-
-8. GOVERNING LAW:
-This Agreement shall be governed under the laws of India.
-
-IN WITNESS WHEREOF the parties have signed this agreement on the day,
-month and year first above written.
-
-----------------------------                ----------------------------
-LANDLORD SIGNATURE                          TENANT SIGNATURE
-
-Name: _____________________                  Name: _____________________
-
-
-WITNESSES:
-
-1. __________________________
-2. __________________________
+Signed on the date mentioned above.
 `;
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(agreementText);
-    alert("Copied to clipboard!");
+    setAgreementText(text);
+  };
+
+  const enhanceWithAI = async () => {
+    setLoading(true);
+
+    const response = await fetch("/api/improve", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: agreementText }),
+    });
+
+    const data = await response.json();
+    setAgreementText(data.result);
+    setLoading(false);
   };
 
   const downloadPDF = () => {
     const doc = new jsPDF();
     const lines = doc.splitTextToSize(agreementText, 180);
     doc.text(lines, 10, 10);
-    doc.save("Rent-Agreement-India-2026.pdf");
+    doc.save("AI-Rent-Agreement-Pro.pdf");
   };
 
   return (
     <main className="min-h-screen bg-gray-100 p-10">
-      <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
+      <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-lg p-8">
         <h1 className="text-3xl font-bold text-blue-700 mb-6">
-          Rent Agreement Format (India 2026)
+          AI Rent Agreement Pro (India 2026)
         </h1>
 
-        <div className="grid gap-4 mb-8">
+        <div className="grid gap-4 mb-6">
           <input
             type="text"
             placeholder="Landlord Name"
@@ -130,7 +111,7 @@ WITNESSES:
 
           <input
             type="text"
-            placeholder="Full Property Address"
+            placeholder="Property Address"
             className="border p-3 rounded"
             value={propertyAddress}
             onChange={(e) => setPropertyAddress(e.target.value)}
@@ -138,7 +119,7 @@ WITNESSES:
 
           <input
             type="number"
-            placeholder="Monthly Rent Amount (₹)"
+            placeholder="Monthly Rent (₹)"
             className="border p-3 rounded"
             value={rentAmount}
             onChange={(e) => setRentAmount(e.target.value)}
@@ -152,9 +133,18 @@ WITNESSES:
             onChange={(e) => setDeposit(e.target.value)}
           />
 
+          <select
+            className="border p-3 rounded"
+            value={agreementType}
+            onChange={(e) => setAgreementType(e.target.value)}
+          >
+            <option>Residential</option>
+            <option>Commercial</option>
+          </select>
+
           <input
             type="number"
-            placeholder="Agreement Duration (Months)"
+            placeholder="Duration (Months)"
             className="border p-3 rounded"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
@@ -168,24 +158,32 @@ WITNESSES:
           />
         </div>
 
-        <div className="border p-6 rounded bg-gray-50 text-gray-800 whitespace-pre-line mb-6">
-          {agreementText}
-        </div>
-
-        <div className="flex flex-wrap gap-4">
+        <div className="flex gap-4 mb-6">
           <button
-            onClick={copyToClipboard}
-            className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700"
+            onClick={generateBasicAgreement}
+            className="bg-gray-700 text-white px-6 py-3 rounded"
           >
-            Copy Agreement
+            Generate Agreement
+          </button>
+
+          <button
+            onClick={enhanceWithAI}
+            disabled={loading}
+            className="bg-purple-600 text-white px-6 py-3 rounded"
+          >
+            {loading ? "Enhancing..." : "Enhance with AI"}
           </button>
 
           <button
             onClick={downloadPDF}
-            className="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700"
+            className="bg-green-600 text-white px-6 py-3 rounded"
           >
             Download PDF
           </button>
+        </div>
+
+        <div className="border p-6 rounded bg-gray-50 whitespace-pre-line">
+          {agreementText}
         </div>
       </div>
     </main>
