@@ -1,42 +1,52 @@
-export default function sitemap() {
-  const baseUrl = "https://YOUR_DOMAIN_HERE";
+import { MetadataRoute } from "next";
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = "https://legalformat.in";
 
   return [
     {
-      url: `${baseUrl}`,
+      url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
+    },
+    {
+      url: `${baseUrl}/all-tools`,
+      lastModified: new Date(),
     },
     {
       url: `${baseUrl}/rent-agreement-format`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
     },
     {
       url: `${baseUrl}/affidavit-format`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
     },
     {
-      url: `${baseUrl}/about`,
+      url: `${baseUrl}/salary-certificate-format`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
     },
     {
-      url: `${baseUrl}/privacy-policy`,
+      url: `${baseUrl}/experience-letter-format`,
       lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: `${baseUrl}/noc-letter-format`,
       lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/leave-license-agreement-format`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${baseUrl}/offer-letter-format`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${baseUrl}/resignation-letter-format`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${baseUrl}/relieving-letter-format`,
+      lastModified: new Date(),
     },
   ];
 }
