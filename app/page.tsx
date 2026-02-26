@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <main className="relative min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900 overflow-hidden">
 
-      {/* Background Blobs */}
+      {/* Background Gradient Blobs */}
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-purple-200 rounded-full blur-3xl opacity-30 animate-pulse"></div>
       <div className="absolute top-60 -right-40 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-30 animate-pulse"></div>
 
@@ -16,6 +16,7 @@ export default function Home() {
           <a href="#pricing" className="text-gray-600 hover:text-black transition">
             Pricing
           </a>
+
           <a
             href="/rent-agreement-auditor"
             className="bg-black text-white px-5 py-2 rounded-lg hover:scale-105 transition duration-300"
@@ -61,7 +62,7 @@ export default function Home() {
         </div>
 
         <p className="text-sm text-gray-500">
-          Free risk score • No signup required
+          Free basic risk score • No signup required
         </p>
       </section>
 
@@ -79,6 +80,21 @@ export default function Home() {
           title="State-Aware Checks"
           description="Highlights Maharashtra leave & license and other state compliance gaps."
         />
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className="relative z-10 px-6 py-32 bg-white">
+        <div className="max-w-6xl mx-auto text-center space-y-16">
+          <h3 className="text-4xl font-semibold">
+            How It Works
+          </h3>
+
+          <div className="grid md:grid-cols-3 gap-12">
+            <StepCard number="01" title="Paste Agreement" />
+            <StepCard number="02" title="AI Compliance Scan" />
+            <StepCard number="03" title="Download Report" />
+          </div>
+        </div>
       </section>
 
       {/* PRICING */}
@@ -129,6 +145,18 @@ function FeatureCard({ title, description }: any) {
     <div className="bg-white p-8 rounded-3xl shadow-lg border hover:-translate-y-2 hover:shadow-2xl transition duration-300">
       <h4 className="text-xl font-semibold mb-3">{title}</h4>
       <p className="text-gray-600">{description}</p>
+    </div>
+  );
+}
+
+function StepCard({ number, title }: any) {
+  return (
+    <div className="space-y-4 hover:-translate-y-1 transition duration-300">
+      <div className="text-5xl font-bold text-gray-200">{number}</div>
+      <h4 className="text-xl font-semibold">{title}</h4>
+      <p className="text-gray-600">
+        Secure structured compliance analysis powered by AI.
+      </p>
     </div>
   );
 }
