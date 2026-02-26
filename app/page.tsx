@@ -1,185 +1,153 @@
 export default function Home() {
   return (
-    <main className="max-w-6xl mx-auto px-6 py-16 space-y-24">
+    <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900">
 
-      {/* HERO */}
-      <section className="text-center space-y-6">
-        <h1 className="text-5xl font-bold leading-tight">
-          AI Rent Agreement Compliance Auditor
+      {/* NAVBAR */}
+      <header className="flex justify-between items-center px-10 py-6 max-w-7xl mx-auto">
+        <h1 className="text-2xl font-bold tracking-tight">
+          LegalFormat
         </h1>
 
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Analyze your rent agreement for legal risks, missing clauses, and
-          compliance gaps in India. Get instant risk score and professional
-          compliance report.
-        </p>
-
-        <div className="flex justify-center gap-4">
+        <div className="flex items-center gap-6">
+          <a href="#pricing" className="text-gray-600 hover:text-black">
+            Pricing
+          </a>
           <a
             href="/rent-agreement-auditor"
-            className="bg-black text-white px-8 py-3 rounded text-lg"
+            className="bg-black text-white px-5 py-2 rounded-lg"
           >
-            Start Free Analysis
+            Start Free
+          </a>
+        </div>
+      </header>
+
+      {/* HERO */}
+      <section className="text-center px-6 py-24 max-w-5xl mx-auto space-y-8">
+        <div className="inline-block px-4 py-1 bg-gray-100 rounded-full text-sm text-gray-600">
+          AI Powered Legal Compliance
+        </div>
+
+        <h2 className="text-5xl md:text-6xl font-bold leading-tight tracking-tight">
+          Know If Your Rent Agreement
+          <span className="block bg-gradient-to-r from-black to-gray-500 bg-clip-text text-transparent">
+            Is Legally Safe
+          </span>
+        </h2>
+
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          Analyze your rent agreement for missing clauses, compliance risks,
+          and legal weaknesses specific to India. Get instant risk score and
+          upgrade recommendations.
+        </p>
+
+        <div className="flex justify-center gap-4 pt-4">
+          <a
+            href="/rent-agreement-auditor"
+            className="bg-black text-white px-8 py-4 rounded-xl text-lg shadow-lg hover:scale-105 transition"
+          >
+            Analyze Agreement
           </a>
 
           <a
             href="#pricing"
-            className="border px-8 py-3 rounded text-lg"
+            className="border border-gray-300 px-8 py-4 rounded-xl text-lg hover:bg-gray-100 transition"
           >
             View Pricing
           </a>
         </div>
 
         <p className="text-sm text-gray-500">
-          No signup required for basic risk score
-        </p>
-      </section>
-
-      {/* TRUST */}
-      <section className="text-center space-y-4">
-        <p className="text-gray-500">
-          Trusted by landlords, tenants and property consultants across India
-        </p>
-      </section>
-
-      {/* PROBLEM */}
-      <section className="space-y-6 text-center">
-        <h2 className="text-3xl font-semibold">
-          Most Rent Agreements Have Hidden Legal Risks
-        </h2>
-
-        <p className="text-gray-600 max-w-3xl mx-auto">
-          Missing clauses, unclear termination terms, improper jurisdiction,
-          weak lock-in conditions, or incorrect stamp duty references can
-          expose you to disputes and financial loss.
+          Free basic risk score • No signup required
         </p>
       </section>
 
       {/* FEATURES */}
-      <section className="grid md:grid-cols-3 gap-8">
-        <div className="p-6 border rounded">
-          <h3 className="font-semibold text-lg mb-2">
-            Risk Score
-          </h3>
-          <p className="text-gray-600">
-            Get a clear compliance score out of 100 with risk severity levels.
-          </p>
-        </div>
-
-        <div className="p-6 border rounded">
-          <h3 className="font-semibold text-lg mb-2">
-            Clause Detection
-          </h3>
-          <p className="text-gray-600">
-            Detect missing or weak clauses like indemnity, lock-in, jurisdiction and inspection rights.
-          </p>
-        </div>
-
-        <div className="p-6 border rounded">
-          <h3 className="font-semibold text-lg mb-2">
-            State-Aware Analysis
-          </h3>
-          <p className="text-gray-600">
-            Highlights compliance gaps specific to Indian states including Maharashtra leave & license rules.
-          </p>
-        </div>
+      <section className="px-6 py-20 max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+        <FeatureCard
+          title="Instant Risk Score"
+          description="Get a structured compliance score out of 100 with severity breakdown."
+        />
+        <FeatureCard
+          title="Clause Detection"
+          description="Detect missing indemnity, lock-in, jurisdiction, and termination clauses."
+        />
+        <FeatureCard
+          title="State-Specific Checks"
+          description="Highlights Maharashtra leave & license and other state compliance issues."
+        />
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="space-y-10 text-center">
-        <h2 className="text-3xl font-semibold">
-          How It Works
-        </h2>
+      <section className="px-6 py-24 bg-white">
+        <div className="max-w-6xl mx-auto text-center space-y-16">
+          <h3 className="text-4xl font-semibold">
+            How It Works
+          </h3>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <div>
-            <h3 className="font-semibold">1. Paste Agreement</h3>
-            <p className="text-gray-600">
-              Paste your rent agreement securely.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold">2. AI Compliance Scan</h3>
-            <p className="text-gray-600">
-              Our engine scans against structured legal checklist.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold">3. Get Report</h3>
-            <p className="text-gray-600">
-              Download full compliance breakdown and corrected version.
-            </p>
+          <div className="grid md:grid-cols-3 gap-12">
+            <StepCard number="01" title="Paste Agreement" />
+            <StepCard number="02" title="AI Compliance Scan" />
+            <StepCard number="03" title="Get Full Report" />
           </div>
         </div>
       </section>
 
       {/* PRICING */}
-      <section id="pricing" className="text-center space-y-8">
-        <h2 className="text-3xl font-semibold">
-          Simple Pricing
-        </h2>
+      <section id="pricing" className="px-6 py-24 bg-gray-50">
+        <div className="max-w-xl mx-auto text-center space-y-10">
+          <h3 className="text-4xl font-semibold">
+            Simple Pricing
+          </h3>
 
-        <div className="max-w-md mx-auto border rounded p-8 space-y-4">
-          <p className="text-lg font-semibold">Pro Plan</p>
-          <p className="text-4xl font-bold">₹299<span className="text-base font-normal">/month</span></p>
+          <div className="bg-white rounded-2xl shadow-xl p-10 space-y-6 border">
+            <p className="text-lg font-semibold">Pro Plan</p>
 
-          <ul className="text-gray-600 space-y-2">
-            <li>Unlimited Agreement Analysis</li>
-            <li>Full Compliance Report PDF</li>
-            <li>AI Corrected Agreement</li>
-            <li>Priority Processing</li>
-          </ul>
+            <p className="text-5xl font-bold">
+              ₹299<span className="text-lg font-normal text-gray-500"> / month</span>
+            </p>
 
-          <a
-            href="/rent-agreement-auditor"
-            className="block bg-black text-white px-6 py-3 rounded"
-          >
-            Start Free
-          </a>
+            <ul className="space-y-2 text-gray-600">
+              <li>Unlimited Agreement Analysis</li>
+              <li>Download Compliance Report PDF</li>
+              <li>AI Corrected Agreement</li>
+              <li>Priority Processing</li>
+            </ul>
+
+            <a
+              href="/rent-agreement-auditor"
+              className="block bg-black text-white px-6 py-4 rounded-xl hover:scale-105 transition"
+            >
+              Start Free Trial
+            </a>
+          </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="space-y-6 max-w-4xl mx-auto">
-        <h2 className="text-3xl font-semibold text-center">
-          Frequently Asked Questions
-        </h2>
-
-        <div>
-          <p className="font-semibold">
-            Is my agreement stored?
-          </p>
-          <p className="text-gray-600">
-            No. Agreements are processed securely and not permanently stored.
-          </p>
-        </div>
-
-        <div>
-          <p className="font-semibold">
-            Does this replace a lawyer?
-          </p>
-          <p className="text-gray-600">
-            No. This tool provides structured compliance insights but does not replace professional legal advice.
-          </p>
-        </div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className="text-center space-y-6">
-        <h2 className="text-3xl font-semibold">
-          Ready to Check Your Rent Agreement?
-        </h2>
-
-        <a
-          href="/rent-agreement-auditor"
-          className="bg-black text-white px-8 py-3 rounded text-lg"
-        >
-          Analyze Now
-        </a>
-      </section>
-
+      {/* FOOTER */}
+      <footer className="text-center py-10 text-gray-500 text-sm">
+        © {new Date().getFullYear()} LegalFormat India. All rights reserved.
+      </footer>
     </main>
+  );
+}
+
+function FeatureCard({ title, description }: any) {
+  return (
+    <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition border">
+      <h4 className="text-xl font-semibold mb-3">{title}</h4>
+      <p className="text-gray-600">{description}</p>
+    </div>
+  );
+}
+
+function StepCard({ number, title }: any) {
+  return (
+    <div className="space-y-4">
+      <div className="text-5xl font-bold text-gray-200">{number}</div>
+      <h4 className="text-xl font-semibold">{title}</h4>
+      <p className="text-gray-600">
+        Secure processing with structured compliance analysis.
+      </p>
+    </div>
   );
 }
