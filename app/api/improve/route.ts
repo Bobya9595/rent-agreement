@@ -4,10 +4,10 @@ export async function POST(req: Request) {
   try {
     const { text } = await req.json();
 
-    if (!text) {
+    if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
-        { error: "Text is required" },
-        { status: 400 }
+        { error: "API KEY MISSING IN VERCEL" },
+        { status: 500 }
       );
     }
 
@@ -20,44 +20,22 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          {
-            role: "system",
-            content: `You are an expert Indian legal drafting assistant. 
-            Improve the given rent agreement clause in proper Indian legal format.
-            Use:
-            - Formal legal language
-            - Proper clause numbering
-            - WHEREAS structure
-            - Clear structured paragraphs
-            Do not add unnecessary explanation.`,
-          },
-          {
-            role: "user",
-            content: text,
-          },
+          { role: "system", content: "Rewrite legally." },
+          { role: "user", content: text },
         ],
-        temperature: 0.4,
       }),
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-      console.error("OpenAI Error:", data);
-      return NextResponse.json(
-        { error: "AI generation failed" },
-        { status: 500 }
-      );
-    }
-
     return NextResponse.json({
-      result: data.choices[0].message.content,
+      openai_status: response.status,
+      openai_response: data,
     });
 
-  } catch (error) {
-    console.error("Server Error:", error);
+  } catch (error: any) {
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: error.message },
       { status: 500 }
     );
   }
