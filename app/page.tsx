@@ -103,7 +103,7 @@ export default function Home() {
             <p className="text-lg font-semibold">Pro Plan</p>
 
             <p className="text-5xl font-bold">
-              ₹299<span className="text-lg font-normal text-gray-500"> / month</span>
+              ₹99<span className="text-lg font-normal text-gray-500"> / month</span>
             </p>
 
             <ul className="space-y-2 text-gray-600">
@@ -151,3 +151,4 @@ function StepCard({ number, title }: any) {
     </div>
   );
 }
+
