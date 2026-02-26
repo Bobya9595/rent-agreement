@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function DashboardLayout({
   children,
 }: {
@@ -7,28 +9,44 @@ export default function DashboardLayout({
     <div className="flex min-h-screen bg-gray-50">
 
       {/* Sidebar */}
-      <aside className="hidden md:flex md:w-64 bg-white border-r flex-col p-6">
+      <aside className="hidden md:flex md:w-64 bg-white border-r p-6 flex-col">
+
         <h2 className="text-xl font-bold mb-10">
           LegalFormat
         </h2>
 
         <nav className="space-y-4 text-gray-600">
-          <a href="/dashboard" className="block hover:text-black transition">
+
+          <Link
+            href="/dashboard"
+            className="block hover:text-black transition"
+          >
             Dashboard
-          </a>
+          </Link>
 
-          <a href="/rent-agreement-auditor" className="block hover:text-black transition">
+          <Link
+            href="/rent-agreement-auditor"
+            className="block hover:text-black transition"
+          >
             New Analysis
-          </a>
+          </Link>
 
-          <a href="#" className="block hover:text-black transition">
+          <Link
+            href="#"
+            className="block hover:text-black transition"
+          >
             Reports
-          </a>
+          </Link>
 
-          <a href="#" className="block hover:text-black transition">
+          <Link
+            href="#"
+            className="block hover:text-black transition"
+          >
             Billing
-          </a>
+          </Link>
+
         </nav>
+
       </aside>
 
       {/* Main Content */}
