@@ -1,9 +1,7 @@
 "use client"
 
-export const dynamic = "force-dynamic"
-
 import { useState } from "react"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabase"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -13,6 +11,8 @@ export default function LoginPage() {
   const handleLogin = async () => {
     setLoading(true)
     setMessage("")
+
+    const supabase = getSupabaseClient()
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
