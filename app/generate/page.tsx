@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function GeneratePage() {
   const [docType, setDocType] = useState("Rent Agreement");
@@ -24,12 +25,10 @@ ${docType}
 
 This agreement is made between ${partyOne} and ${partyTwo}.
 
-Details:
-${details || "Standard terms apply."}
+${details || "Standard terms and conditions apply."}
 
 This document is generated using AI Legal Intelligence.
       `);
-
       setLoading(false);
     }, 2000);
   };
@@ -37,13 +36,21 @@ This document is generated using AI Legal Intelligence.
   return (
     <div className="min-h-screen bg-[#0c0c12] text-white p-10">
 
+      {/* BACK BUTTON */}
+      <Link
+        href="/dashboard"
+        className="text-sm text-gray-400 hover:text-white mb-6 inline-block"
+      >
+        ← Back to Dashboard
+      </Link>
+
       <h1 className="text-3xl font-bold mb-8">
         AI Document Generator
       </h1>
 
       <div className="grid md:grid-cols-2 gap-10">
 
-        {/* FORM */}
+        {/* FORM SECTION */}
         <div className="bg-[#16161d] p-8 rounded-2xl border border-gray-800 space-y-6">
 
           <div>
@@ -53,7 +60,7 @@ This document is generated using AI Legal Intelligence.
             <select
               value={docType}
               onChange={(e) => setDocType(e.target.value)}
-              className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3"
+              className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-purple-500"
             >
               <option>Rent Agreement</option>
               <option>Offer Letter</option>
@@ -65,23 +72,23 @@ This document is generated using AI Legal Intelligence.
           <input
             value={partyOne}
             onChange={(e) => setPartyOne(e.target.value)}
-            className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3"
-            placeholder="Party 1"
+            className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-purple-500"
+            placeholder="Party 1 (e.g. Landlord / Employer)"
           />
 
           <input
             value={partyTwo}
             onChange={(e) => setPartyTwo(e.target.value)}
-            className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3"
-            placeholder="Party 2"
+            className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-purple-500"
+            placeholder="Party 2 (e.g. Tenant / Employee)"
           />
 
           <textarea
             value={details}
             onChange={(e) => setDetails(e.target.value)}
-            className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3"
+            className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-purple-500"
             rows={4}
-            placeholder="Additional details"
+            placeholder="Additional details..."
           />
 
           <button
@@ -93,8 +100,9 @@ This document is generated using AI Legal Intelligence.
 
         </div>
 
-        {/* RESULT */}
+        {/* RESULT SECTION */}
         <div className="bg-[#16161d] p-8 rounded-2xl border border-gray-800">
+
           <h2 className="text-lg font-semibold mb-4">
             Generated Document
           </h2>
@@ -116,6 +124,7 @@ This document is generated using AI Legal Intelligence.
               Fill the form and generate document.
             </p>
           )}
+
         </div>
 
       </div>
