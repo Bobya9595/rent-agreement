@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   FileText,
   ShieldCheck,
@@ -67,14 +66,13 @@ export default function FeaturesSection() {
         {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <motion.div
+            <div
               key={index}
-              whileHover={{ scale: 1.04 }}
-              transition={{ duration: 0.3 }}
               className="group relative bg-white/5 border border-white/10 
                          backdrop-blur-xl p-8 rounded-3xl 
                          hover:border-purple-500/40 
-                         transition-all duration-300"
+                         transition-all duration-300 
+                         hover:scale-[1.03]"
             >
               <div className="mb-6">
                 <feature.icon className="h-10 w-10 text-purple-500 group-hover:text-purple-400 transition" />
@@ -88,12 +86,12 @@ export default function FeaturesSection() {
                 {feature.description}
               </p>
 
-              {/* Glow Effect */}
+              {/* Soft Glow */}
               <div className="absolute inset-0 rounded-3xl 
                               bg-purple-600/5 opacity-0 
                               group-hover:opacity-100 
                               transition duration-500 blur-xl" />
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
