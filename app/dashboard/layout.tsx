@@ -2,13 +2,6 @@
 
 import Link from "next/link";
 import { ReactNode } from "react";
-import {
-  LayoutDashboard,
-  FileText,
-  CreditCard,
-  Settings,
-  LogOut
-} from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -25,43 +18,40 @@ export default function DashboardLayout({
             LegalFormat
           </h1>
 
-          <nav className="space-y-3">
+          <nav className="space-y-3 text-gray-300">
+
             <Link
               href="/dashboard"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition"
+              className="block px-4 py-3 rounded-xl hover:bg-white/5 transition"
             >
-              <LayoutDashboard size={18} />
-              Overview
+              Dashboard Overview
             </Link>
 
             <Link
               href="/dashboard/documents"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition"
+              className="block px-4 py-3 rounded-xl hover:bg-white/5 transition"
             >
-              <FileText size={18} />
               Documents
             </Link>
 
             <Link
               href="/dashboard/billing"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition"
+              className="block px-4 py-3 rounded-xl hover:bg-white/5 transition"
             >
-              <CreditCard size={18} />
               Billing
             </Link>
 
             <Link
               href="/dashboard/settings"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition"
+              className="block px-4 py-3 rounded-xl hover:bg-white/5 transition"
             >
-              <Settings size={18} />
               Settings
             </Link>
+
           </nav>
         </div>
 
-        <button className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-500/10 text-red-400 transition">
-          <LogOut size={18} />
+        <button className="px-4 py-3 rounded-xl hover:bg-red-500/10 text-red-400 transition text-left">
           Logout
         </button>
       </aside>
