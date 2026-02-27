@@ -22,9 +22,9 @@ export default function LoginPage() {
     })
 
     if (error) {
-      setMessage("Something went wrong. Please try again.")
+      setMessage(error.message)
     } else {
-      setMessage("Check your email for the login link.")
+      setMessage("Check your email for login link.")
     }
 
     setLoading(false)
