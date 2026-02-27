@@ -14,7 +14,7 @@ export default function DashboardLayout({
     { name: "Dashboard", href: "/dashboard" },
     { name: "New Analysis", href: "/analyze" },
     { name: "Generate Document", href: "/generate" },
-    { name: "Reports", href: "#" },
+    { name: "Reports", href: "/dashboard/reports" },
     { name: "Billing", href: "/pricing" },
   ];
 
