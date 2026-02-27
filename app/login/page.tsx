@@ -28,11 +28,9 @@ export default function LoginPage() {
 
       const user = userCredential.user;
 
-      // Reference to Firestore user document
       const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
 
-      // If user profile doesn't exist, create it
       if (!userSnap.exists()) {
         await setDoc(userRef, {
           email: user.email,
