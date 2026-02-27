@@ -19,7 +19,6 @@ export default function DashboardLayout({
           </h1>
 
           <nav className="space-y-3 text-gray-300">
-
             <Link
               href="/dashboard"
               className="block px-4 py-3 rounded-xl hover:bg-white/5 transition"
@@ -47,7 +46,6 @@ export default function DashboardLayout({
             >
               Settings
             </Link>
-
           </nav>
         </div>
 
