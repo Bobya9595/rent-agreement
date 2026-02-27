@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import jsPDF from "jspdf";
 
 export default function GeneratePage() {
   const [docType, setDocType] = useState("Rent Agreement");
@@ -20,17 +21,31 @@ export default function GeneratePage() {
     setGeneratedDoc(null);
 
     setTimeout(() => {
-      setGeneratedDoc(`
-${docType}
+      setGeneratedDoc(
+`${docType.toUpperCase()}
 
 This agreement is made between ${partyOne} and ${partyTwo}.
 
 ${details || "Standard terms and conditions apply."}
 
-This document is generated using AI Legal Intelligence.
-      `);
+This document is generated using AI Legal Intelligence by LegalFormat.
+`
+      );
       setLoading(false);
-    }, 2000);
+    }, 1500);
+  };
+
+  const handleDownloadPDF = () => {
+    if (!generatedDoc) return;
+
+    const doc = new jsPDF("p", "mm", "a4");
+    doc.setFont("Times", "Roman");
+    doc.setFontSize(12);
+
+    const lines = doc.splitTextToSize(generatedDoc, 180);
+    doc.text(lines, 15, 20);
+
+    doc.save("LegalFormat-Document.pdf");
   };
 
   return (
@@ -114,9 +129,20 @@ This document is generated using AI Legal Intelligence.
           )}
 
           {!loading && generatedDoc && (
-            <pre className="whitespace-pre-wrap text-sm text-gray-300">
-              {generatedDoc}
-            </pre>
+            <div className="space-y-6">
+
+              <pre className="whitespace-pre-wrap text-sm text-gray-300 bg-[#1a1a23] p-4 rounded-xl">
+                {generatedDoc}
+              </pre>
+
+              <button
+                onClick={handleDownloadPDF}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-3 rounded-xl hover:scale-105 transition"
+              >
+                Download PDF
+              </button>
+
+            </div>
           )}
 
           {!loading && !generatedDoc && (
