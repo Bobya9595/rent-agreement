@@ -1,64 +1,84 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { getSupabaseClient } from "@/lib/supabase"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+);
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
+  const router = useRouter();
 
-  const handleLogin = async () => {
-    setLoading(true)
-    setMessage("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    const supabase = getSupabaseClient()
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    const { error } = await supabase.auth.signInWithOtp({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      options: {
-        emailRedirectTo: "https://legalformat.in/dashboard",
-      },
-    })
+      password,
+    });
 
     if (error) {
-      setMessage(error.message)
-    } else {
-      setMessage("Check your email for login link.")
+      setError(error.message);
+      setLoading(false);
+      return;
     }
 
-    setLoading(false)
-  }
+    if (data.user) {
+      router.push("/dashboard");
+    }
+
+    setLoading(false);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">
+      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
+        <h1 className="text-2xl font-bold text-center mb-6">
           Login to LegalFormat
         </h1>
 
-        <input
-          type="email"
-          placeholder="Enter your email"
-          className="w-full p-3 border rounded-lg mb-4"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            className="w-full p-3 border rounded-lg"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <button
-          onClick={handleLogin}
-          disabled={loading}
-          className="w-full bg-black text-white p-3 rounded-lg hover:bg-gray-800 transition"
-        >
-          {loading ? "Sending..." : "Send Magic Link"}
-        </button>
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            className="w-full p-3 border rounded-lg"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        {message && (
-          <p className="mt-4 text-center text-sm text-gray-600">
-            {message}
-          </p>
-        )}
+          {error && (
+            <p className="text-red-500 text-sm">{error}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white p-3 rounded-lg hover:opacity-90"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
       </div>
     </div>
-  )
+  );
 }
