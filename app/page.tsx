@@ -1,49 +1,42 @@
-import PublicHeader from "@/components/PublicHeader";
-import Link from "next/link";
+import Navbar from "@/components/Navbar";
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <>
-      <PublicHeader />
+    <main className="bg-[#020617] min-h-screen text-white">
+      
+      <Navbar />
 
-      <section className="relative min-h-screen flex items-center justify-center text-center px-6">
+      <section className="flex flex-col items-center justify-center text-center py-32 px-6">
 
-        {/* Background Gradient Glow */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-blue-900/20 blur-3xl opacity-40" />
+        <h1 className="text-5xl font-bold leading-tight">
+          AI Legal Intelligence
+          <span className="block bg-gradient-to-r from-purple-500 to-blue-400 text-transparent bg-clip-text">
+            for Indian Agreements
+          </span>
+        </h1>
 
-        <div className="relative max-w-4xl mx-auto">
+        <p className="text-gray-400 mt-6 max-w-xl">
+          Generate rent agreements, affidavits, contracts and more in minutes using AI-powered automation.
+        </p>
 
-          <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-            AI Legal Intelligence
-            <br />
-            <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-              for Indian Agreements
-            </span>
-          </h1>
+        <div className="flex gap-4 mt-8">
+          <a
+            href="/templates"
+            className="bg-gradient-to-r from-purple-600 to-blue-500 px-6 py-3 rounded-lg font-medium"
+          >
+            Get Started
+          </a>
 
-          <p className="text-gray-400 text-lg mb-10">
-            Generate rent agreements, affidavits, contracts and more
-            in minutes using AI-powered automation.
-          </p>
-
-          <div className="flex justify-center gap-6">
-            <Link
-              href="/signup"
-              className="px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 hover:opacity-90 transition text-lg"
-            >
-              Get Started
-            </Link>
-
-            <Link
-              href="/login"
-              className="px-8 py-4 rounded-xl border border-white/20 hover:bg-white/10 transition text-lg"
-            >
-              Login
-            </Link>
-          </div>
-
+          <a
+            href="/login"
+            className="border border-white/20 px-6 py-3 rounded-lg"
+          >
+            Login
+          </a>
         </div>
+
       </section>
-    </>
+
+    </main>
   );
 }
