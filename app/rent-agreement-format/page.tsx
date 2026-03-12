@@ -16,7 +16,7 @@ export default function RentAgreementPage() {
     const text = `
 RENT AGREEMENT
 
-This agreement is made between:
+This Rent Agreement is made between:
 
 Landlord: ${landlord}
 Tenant: ${tenant}
@@ -27,6 +27,8 @@ ${address}
 Monthly Rent: ₹${rent}
 
 Both parties agree to the terms and conditions mentioned above.
+
+Generated using LegalFormat
 `;
 
     setAgreement(text);
@@ -37,17 +39,33 @@ Both parties agree to the terms and conditions mentioned above.
 
       <Navbar />
 
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 py-20 px-6">
+      <div className="max-w-5xl mx-auto px-6 py-20">
 
-        {/* LEFT FORM */}
+        {/* SEO TITLE */}
 
-        <div>
+        <h1 className="text-4xl font-bold mb-6">
+          Rent Agreement Format India (Free Generator)
+        </h1>
 
-          <h1 className="text-3xl font-bold mb-6">
-            Rent Agreement Generator
-          </h1>
+        {/* SEO CONTENT */}
+
+        <p className="text-gray-400 mb-10">
+          A rent agreement is a legal document used between a landlord and tenant
+          when renting property. This agreement defines rent amount, property
+          details, responsibilities, and duration of stay.
+        </p>
+
+        {/* GENERATOR TOOL */}
+
+        <div className="grid md:grid-cols-2 gap-10">
+
+          {/* FORM */}
 
           <div className="space-y-4">
+
+            <h2 className="text-2xl font-semibold mb-4">
+              Generate Rent Agreement
+            </h2>
 
             <input
               placeholder="Landlord Name"
@@ -82,25 +100,52 @@ Both parties agree to the terms and conditions mentioned above.
 
           </div>
 
+          {/* PREVIEW */}
+
+          <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
+
+            <h2 className="text-xl font-semibold mb-4">
+              Agreement Preview
+            </h2>
+
+            {agreement ? (
+              <pre className="whitespace-pre-wrap text-gray-300">
+                {agreement}
+              </pre>
+            ) : (
+              <p className="text-gray-500">
+                Your agreement will appear here after generation.
+              </p>
+            )}
+
+          </div>
+
         </div>
 
-        {/* RIGHT PREVIEW */}
+        {/* SEO SECTION */}
 
-        <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
+        <div className="mt-20 space-y-6 text-gray-400">
 
-          <h2 className="text-xl font-semibold mb-4">
-            Agreement Preview
+          <h2 className="text-2xl font-semibold text-white">
+            What is a Rent Agreement?
           </h2>
 
-          {agreement ? (
-            <pre className="whitespace-pre-wrap text-gray-300">
-              {agreement}
-            </pre>
-          ) : (
-            <p className="text-gray-500">
-              Your agreement will appear here after generation.
-            </p>
-          )}
+          <p>
+            A rent agreement is a legal contract between a landlord and tenant
+            that outlines the terms of renting property. It includes information
+            such as rent amount, payment schedule, property address, and
+            responsibilities of both parties.
+          </p>
+
+          <h2 className="text-2xl font-semibold text-white">
+            Why is a Rent Agreement Important?
+          </h2>
+
+          <p>
+            A written rent agreement protects both the landlord and tenant from
+            legal disputes. It clearly defines rent payment terms, property use,
+            and responsibilities.
+          </p>
 
         </div>
 
