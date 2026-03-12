@@ -34,6 +34,9 @@ export default function RentAgreementPage() {
 
     const res = await fetch("/api/generate-document", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         landlord,
         tenant,
@@ -58,7 +61,9 @@ export default function RentAgreementPage() {
 
     const pdf = new jsPDF();
 
-    pdf.text(document, 10, 20);
+    const lines = pdf.splitTextToSize(document, 180);
+
+    pdf.text(lines, 10, 20);
 
     pdf.save("rent-agreement.pdf");
   };
@@ -73,90 +78,98 @@ export default function RentAgreementPage() {
 
       <Navbar />
 
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 py-20 px-6">
+      <div className="max-w-7xl mx-auto py-20 px-6">
 
-        {/* LEFT SIDE FORM */}
+        <h1 className="text-4xl font-bold text-center mb-12">
+          AI Rent Agreement Generator
+        </h1>
 
-        <div>
+        <div className="grid md:grid-cols-2 gap-12">
 
-          <h1 className="text-3xl font-bold mb-6">
-            Rent Agreement Generator
-          </h1>
+          {/* FORM */}
 
-          <div className="space-y-4">
+          <div className="bg-gray-900 p-8 rounded-xl border border-gray-800">
 
-            <input
-              placeholder="Landlord Name"
-              className="w-full p-3 rounded bg-gray-900 border border-gray-700"
-              onChange={(e)=>setLandlord(e.target.value)}
-            />
+            <h2 className="text-xl font-semibold mb-6">
+              Agreement Details
+            </h2>
 
-            <input
-              placeholder="Tenant Name"
-              className="w-full p-3 rounded bg-gray-900 border border-gray-700"
-              onChange={(e)=>setTenant(e.target.value)}
-            />
+            <div className="space-y-4">
 
-            <input
-              placeholder="Monthly Rent"
-              className="w-full p-3 rounded bg-gray-900 border border-gray-700"
-              onChange={(e)=>setRent(e.target.value)}
-            />
+              <input
+                placeholder="Landlord Name"
+                className="w-full p-3 rounded bg-gray-800 border border-gray-700"
+                onChange={(e)=>setLandlord(e.target.value)}
+              />
 
-            <textarea
-              placeholder="Property Address"
-              className="w-full p-3 rounded bg-gray-900 border border-gray-700"
-              onChange={(e)=>setAddress(e.target.value)}
-            />
+              <input
+                placeholder="Tenant Name"
+                className="w-full p-3 rounded bg-gray-800 border border-gray-700"
+                onChange={(e)=>setTenant(e.target.value)}
+              />
 
-            <button
-              onClick={generateDocument}
-              className="w-full bg-purple-600 py-3 rounded-lg"
-            >
-              {loading ? "Generating..." : "Generate Agreement"}
-            </button>
+              <input
+                placeholder="Monthly Rent (₹)"
+                className="w-full p-3 rounded bg-gray-800 border border-gray-700"
+                onChange={(e)=>setRent(e.target.value)}
+              />
+
+              <textarea
+                placeholder="Property Address"
+                className="w-full p-3 rounded bg-gray-800 border border-gray-700"
+                onChange={(e)=>setAddress(e.target.value)}
+              />
+
+              <button
+                onClick={generateDocument}
+                className="w-full bg-purple-600 py-3 rounded-lg"
+              >
+                {loading ? "Generating..." : "Generate Agreement"}
+              </button>
+
+            </div>
 
           </div>
 
-        </div>
+          {/* PREVIEW */}
 
-        {/* RIGHT SIDE PREVIEW */}
+          <div className="bg-gray-900 p-8 rounded-xl border border-gray-800">
 
-        <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
+            <h2 className="text-xl font-semibold mb-6">
+              Agreement Preview
+            </h2>
 
-          <h2 className="text-xl font-semibold mb-4">
-            Agreement Preview
-          </h2>
+            {document ? (
+              <>
+                <div className="whitespace-pre-wrap text-gray-300 leading-relaxed max-h-[500px] overflow-y-auto">
+                  {document}
+                </div>
 
-          {document ? (
-            <>
-              <pre className="whitespace-pre-wrap text-gray-300">
-                {document}
-              </pre>
+                <div className="flex gap-4 mt-6">
 
-              <div className="flex gap-4 mt-6">
+                  <button
+                    onClick={copyDocument}
+                    className="bg-gray-700 px-4 py-2 rounded"
+                  >
+                    Copy
+                  </button>
 
-                <button
-                  onClick={copyDocument}
-                  className="bg-gray-700 px-4 py-2 rounded"
-                >
-                  Copy
-                </button>
+                  <button
+                    onClick={downloadPDF}
+                    className="bg-purple-600 px-4 py-2 rounded"
+                  >
+                    Download PDF
+                  </button>
 
-                <button
-                  onClick={downloadPDF}
-                  className="bg-purple-600 px-4 py-2 rounded"
-                >
-                  Download PDF
-                </button>
+                </div>
+              </>
+            ) : (
+              <p className="text-gray-500">
+                Your generated agreement will appear here.
+              </p>
+            )}
 
-              </div>
-            </>
-          ) : (
-            <p className="text-gray-500">
-              Your agreement will appear here after generation.
-            </p>
-          )}
+          </div>
 
         </div>
 
