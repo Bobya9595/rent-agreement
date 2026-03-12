@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@upstash/ratelimit": "^2.0.0",
-    "@upstash/redis": "^1.31.0",
+    "@tiptap/react": "^2.2.4",
+    "@tiptap/starter-kit": "^2.2.4",
+    "docx": "^8.5.0",
+    "file-saver": "^2.0.5",
     "firebase": "^10.12.2",
     "jspdf": "^2.5.1",
     "lucide-react": "^0.395.0",
