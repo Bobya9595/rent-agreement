@@ -1,79 +1,46 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Navbar from "../../components/Navbar";
-import DocumentViewer from "../../components/DocumentViewer";
-
-import jsPDF from "jspdf";
-
-import { auth } from "../../lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "next/navigation";
-
-import { Document, Packer, Paragraph } from "docx";
-import { saveAs } from "file-saver";
+import { useState } from "react";
 
 export default function RentAgreementPage() {
 
-  const router = useRouter();
-
-  const [landlord, setLandlord] = useState("");
-  const [tenant, setTenant] = useState("");
-  const [rent, setRent] = useState("");
-  const [address, setAddress] = useState("");
-
   const [document, setDocument] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const [user, setUser] = useState<any>(null);
+  const generateAgreement = async () => {
 
-  useEffect(() => {
-
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-    });
-
-    return () => unsubscribe();
-
-  }, []);
-
-  const generateDocument = async () => {
-
-    setLoading(true);
-
-    const res = await fetch("/api/generate-document", {
+    const res = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        landlord,
-        tenant,
-        rent,
-        address
+        landlord: "John",
+        tenant: "Rahul",
+        rent: "15000",
+        address: "Mumbai"
       })
     });
 
     const data = await res.json();
 
     setDocument(data.document);
-
-    setLoading(false);
   };
 
-  const copyDocument = () => {
+  const handlePayment = async () => {
 
-    navigator.clipboard.writeText(document);
+    const user = localStorage.getItem("user");
 
-    alert("Document copied!");
+    if (!user) {
 
-  };
+      alert("Please login first");
 
-  /* START PAYMENT */
+      window.location.href = "/login";
 
-  const startPayment = async () => {
+      return;
 
-    const res = await fetch("/api/create-checkout-session", {
+    }
+
+    const res = await fetch("/api/checkout", {
       method: "POST"
     });
 
@@ -83,170 +50,29 @@ export default function RentAgreementPage() {
 
   };
 
-  /* PDF EXPORT */
-
-  const downloadPDF = () => {
-
-    const pdf = new jsPDF({
-      unit: "pt",
-      format: "a4"
-    });
-
-    const margin = 60;
-    const pageWidth = 480;
-
-    pdf.setFont("Times", "Normal");
-    pdf.setFontSize(12);
-
-    const lines = pdf.splitTextToSize(document, pageWidth);
-
-    let y = 80;
-
-    lines.forEach((line: string) => {
-
-      if (y > 750) {
-        pdf.addPage();
-        y = 80;
-      }
-
-      pdf.text(line, margin, y);
-      y += 18;
-
-    });
-
-    pdf.save("rent-agreement.pdf");
-
-  };
-
-  /* DOCX EXPORT */
-
-  const downloadDOCX = async () => {
-
-    const lines = document.split("\n");
-
-    const paragraphs = lines.map(
-      (line) =>
-        new Paragraph({
-          text: line,
-          spacing: { after: 200 }
-        })
-    );
-
-    const doc = new Document({
-      sections: [
-        {
-          children: paragraphs
-        }
-      ]
-    });
-
-    const blob = await Packer.toBlob(doc);
-
-    saveAs(blob, "rent-agreement.docx");
-
-  };
-
   return (
 
-    <main className="min-h-screen bg-[#020617] text-white">
+    <div style={{ maxWidth: "800px", margin: "auto" }}>
 
-      <Navbar />
+      <h1>Rent Agreement Generator</h1>
 
-      <div className="max-w-7xl mx-auto py-20 px-6">
+      <button onClick={generateAgreement}>
+        Generate Agreement
+      </button>
 
-        <h1 className="text-4xl font-bold text-center mb-12">
-          Rent Agreement Generator
-        </h1>
+      <pre style={{ whiteSpace: "pre-wrap" }}>
+        {document}
+      </pre>
 
-        <div className="grid md:grid-cols-2 gap-12">
+      {document && (
 
-          {/* FORM PANEL */}
+        <button onClick={handlePayment}>
+          Pay ₹10 & Download
+        </button>
 
-          <div className="bg-gray-900 p-8 rounded-xl border border-gray-800">
+      )}
 
-            <h2 className="text-xl font-semibold mb-6">
-              Agreement Details
-            </h2>
+    </div>
 
-            <div className="space-y-4">
-
-              <input
-                placeholder="Landlord Name"
-                className="w-full p-3 rounded bg-gray-800 border border-gray-700"
-                onChange={(e)=>setLandlord(e.target.value)}
-              />
-
-              <input
-                placeholder="Tenant Name"
-                className="w-full p-3 rounded bg-gray-800 border border-gray-700"
-                onChange={(e)=>setTenant(e.target.value)}
-              />
-
-              <input
-                placeholder="Monthly Rent"
-                className="w-full p-3 rounded bg-gray-800 border border-gray-700"
-                onChange={(e)=>setRent(e.target.value)}
-              />
-
-              <textarea
-                placeholder="Property Address"
-                className="w-full p-3 rounded bg-gray-800 border border-gray-700"
-                onChange={(e)=>setAddress(e.target.value)}
-              />
-
-              <button
-                onClick={generateDocument}
-                className="w-full bg-purple-600 py-3 rounded-lg"
-              >
-                {loading ? "Generating..." : "Generate Agreement"}
-              </button>
-
-            </div>
-
-          </div>
-
-          {/* DOCUMENT PANEL */}
-
-          <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
-
-            {document ? (
-
-              <>
-                <DocumentViewer content={document} />
-
-                <div className="flex gap-4 mt-6">
-
-                  <button
-                    onClick={copyDocument}
-                    className="bg-gray-700 px-4 py-2 rounded"
-                  >
-                    Copy
-                  </button>
-
-                  <button
-                    onClick={startPayment}
-                    className="bg-purple-600 px-4 py-2 rounded"
-                  >
-                    Pay ₹10 & Download
-                  </button>
-
-                </div>
-              </>
-
-            ) : (
-
-              <p className="text-gray-500">
-                Generate an agreement to preview the document.
-              </p>
-
-            )}
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </main>
   );
 }
