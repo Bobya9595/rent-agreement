@@ -6,9 +6,6 @@ import Navbar from "../../components/Navbar";
 import DocumentViewer from "../../components/DocumentViewer";
 
 import jsPDF from "jspdf";
-import { Document, Packer, Paragraph } from "docx";
-import { saveAs } from "file-saver";
-
 import { auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -19,18 +16,16 @@ export default function RentAgreementPage() {
   const [rent, setRent] = useState("");
   const [address, setAddress] = useState("");
 
-  const [document, setDocument] = useState("");
+  const [documentText, setDocumentText] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
     });
 
     return () => unsubscribe();
-
   }, []);
 
   /* GENERATE DOCUMENT */
@@ -61,25 +56,21 @@ export default function RentAgreementPage() {
 
       const data = await res.json();
 
-      setDocument(data.document);
+      setDocumentText(data.document);
 
     } catch (error) {
-
       console.error(error);
       alert("Error generating document");
-
     }
 
     setLoading(false);
-
   };
 
   /* COPY DOCUMENT */
 
   const copyDocument = () => {
 
-    navigator.clipboard.writeText(document);
-
+    navigator.clipboard.writeText(documentText);
     alert("Document copied");
 
   };
@@ -89,13 +80,8 @@ export default function RentAgreementPage() {
   const startPayment = async () => {
 
     if (!user) {
-      alert("Please login before payment");
+      alert("Please login first");
       window.location.href = "/login";
-      return;
-    }
-
-    if (!document) {
-      alert("Generate document first");
       return;
     }
 
@@ -110,7 +96,7 @@ export default function RentAgreementPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert("Payment session error");
+        alert("Payment session failed");
       }
 
     } catch (error) {
@@ -122,7 +108,7 @@ export default function RentAgreementPage() {
 
   };
 
-  /* PDF EXPORT */
+  /* DOWNLOAD PDF */
 
   const downloadPDF = () => {
 
@@ -137,7 +123,7 @@ export default function RentAgreementPage() {
     pdf.setFont("Times", "Normal");
     pdf.setFontSize(12);
 
-    const lines = pdf.splitTextToSize(document, pageWidth);
+    const lines = pdf.splitTextToSize(documentText, pageWidth);
 
     let y = 80;
 
@@ -155,34 +141,6 @@ export default function RentAgreementPage() {
     });
 
     pdf.save("rent-agreement.pdf");
-
-  };
-
-  /* DOCX EXPORT */
-
-  const downloadDOCX = async () => {
-
-    const lines = document.split("\n");
-
-    const paragraphs = lines.map(
-      (line) =>
-        new Paragraph({
-          text: line,
-          spacing: { after: 200 }
-        })
-    );
-
-    const doc = new Document({
-      sections: [
-        {
-          children: paragraphs
-        }
-      ]
-    });
-
-    const blob = await Packer.toBlob(doc);
-
-    saveAs(blob, "rent-agreement.docx");
 
   };
 
@@ -249,10 +207,11 @@ export default function RentAgreementPage() {
 
           <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
 
-            {document ? (
+            {documentText ? (
 
               <>
-                <DocumentViewer content={document} />
+
+                <DocumentViewer content={documentText} />
 
                 <div className="flex gap-4 mt-6">
 
@@ -268,6 +227,13 @@ export default function RentAgreementPage() {
                     className="bg-purple-600 px-4 py-2 rounded"
                   >
                     Pay ₹10 & Download
+                  </button>
+
+                  <button
+                    onClick={downloadPDF}
+                    className="bg-green-600 px-4 py-2 rounded"
+                  >
+                    Download PDF
                   </button>
 
                 </div>
