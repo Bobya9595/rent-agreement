@@ -5,8 +5,11 @@ import { useState } from "react";
 export default function RentAgreementPage() {
 
   const [document, setDocument] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const generateAgreement = async () => {
+
+    setLoading(true);
 
     const res = await fetch("/api/generate", {
       method: "POST",
@@ -24,6 +27,7 @@ export default function RentAgreementPage() {
     const data = await res.json();
 
     setDocument(data.document);
+    setLoading(false);
   };
 
   const handlePayment = async () => {
@@ -31,13 +35,9 @@ export default function RentAgreementPage() {
     const user = localStorage.getItem("user");
 
     if (!user) {
-
       alert("Please login first");
-
       window.location.href = "/login";
-
       return;
-
     }
 
     const res = await fetch("/api/checkout", {
@@ -47,32 +47,66 @@ export default function RentAgreementPage() {
     const data = await res.json();
 
     window.location.href = data.url;
-
   };
 
   return (
 
-    <div style={{ maxWidth: "800px", margin: "auto" }}>
+    <div style={{ maxWidth: "800px", margin: "100px auto", color: "white" }}>
 
       <h1>Rent Agreement Generator</h1>
 
-      <button onClick={generateAgreement}>
-        Generate Agreement
-      </button>
+      <p>Create a legal rent agreement instantly.</p>
 
-      <pre style={{ whiteSpace: "pre-wrap" }}>
-        {document}
-      </pre>
+      <button
+        onClick={generateAgreement}
+        style={{
+          padding: "10px 20px",
+          background: "#7c3aed",
+          color: "white",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer"
+        }}
+      >
+        {loading ? "Generating..." : "Generate Agreement"}
+      </button>
 
       {document && (
 
-        <button onClick={handlePayment}>
-          Pay ₹10 & Download
-        </button>
+        <div style={{ marginTop: "30px" }}>
+
+          <h3>Agreement Preview</h3>
+
+          <pre
+            style={{
+              whiteSpace: "pre-wrap",
+              background: "#111",
+              padding: "20px",
+              borderRadius: "8px"
+            }}
+          >
+            {document}
+          </pre>
+
+          <button
+            onClick={handlePayment}
+            style={{
+              marginTop: "20px",
+              padding: "12px 25px",
+              background: "#22c55e",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}
+          >
+            Pay ₹10 & Download
+          </button>
+
+        </div>
 
       )}
 
     </div>
-
   );
 }
