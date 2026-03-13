@@ -1,19 +1,23 @@
 "use client";
 
-import { db } from "../../lib/firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import DocumentViewer from "../../components/DocumentViewer";
 
 import jsPDF from "jspdf";
 
-import { auth } from "../../lib/firebase";
+import { auth, db } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
 import { Document, Packer, Paragraph } from "docx";
 import { saveAs } from "file-saver";
+
+import {
+  addDoc,
+  collection,
+  serverTimestamp
+} from "firebase/firestore";
 
 export default function RentAgreementPage() {
 
@@ -39,42 +43,7 @@ export default function RentAgreementPage() {
 
   }, []);
 
-const generateDocument = async () => {
-
-  setLoading(true);
-
-  const res = await fetch("/api/generate-document", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      landlord,
-      tenant,
-      rent,
-      address
-    })
-  });
-
-  const data = await res.json();
-
-  setDocument(data.document);
-
-  // Save document if user logged in
-  if (user) {
-
-    await addDoc(collection(db, "documents"), {
-      userId: user.uid,
-      type: "rent-agreement",
-      content: data.document,
-      createdAt: serverTimestamp()
-    });
-
-  }
-
-  setLoading(false);
-
-};
+  const generateDocument = async () => {
 
     setLoading(true);
 
@@ -95,12 +64,26 @@ const generateDocument = async () => {
 
     setDocument(data.document);
 
+    if (user) {
+
+      await addDoc(collection(db, "documents"), {
+        userId: user.uid,
+        type: "rent-agreement",
+        content: data.document,
+        createdAt: serverTimestamp()
+      });
+
+    }
+
     setLoading(false);
   };
 
   const copyDocument = () => {
+
     navigator.clipboard.writeText(document);
+
     alert("Document copied!");
+
   };
 
   const downloadPDF = () => {
@@ -282,6 +265,6 @@ const generateDocument = async () => {
       </div>
 
     </main>
+
   );
 }
-
