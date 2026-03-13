@@ -1,5 +1,7 @@
 "use client";
 
+import { db } from "../../lib/firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import DocumentViewer from "../../components/DocumentViewer";
@@ -37,7 +39,42 @@ export default function RentAgreementPage() {
 
   }, []);
 
-  const generateDocument = async () => {
+const generateDocument = async () => {
+
+  setLoading(true);
+
+  const res = await fetch("/api/generate-document", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      landlord,
+      tenant,
+      rent,
+      address
+    })
+  });
+
+  const data = await res.json();
+
+  setDocument(data.document);
+
+  // Save document if user logged in
+  if (user) {
+
+    await addDoc(collection(db, "documents"), {
+      userId: user.uid,
+      type: "rent-agreement",
+      content: data.document,
+      createdAt: serverTimestamp()
+    });
+
+  }
+
+  setLoading(false);
+
+};
 
     setLoading(true);
 
@@ -247,3 +284,4 @@ export default function RentAgreementPage() {
     </main>
   );
 }
+
