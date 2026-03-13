@@ -9,51 +9,50 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const prompt = `
-You are a professional legal contract drafting assistant.
+const prompt = `
+You are a professional legal contract writer.
 
-Write a professional RENT AGREEMENT for India using the details below.
+Write a clean RENT AGREEMENT for India.
 
-Landlord Name: ${body.landlord}
-Tenant Name: ${body.tenant}
+Do NOT use markdown symbols like #, ##, **, or bullet symbols.
+
+Use normal legal document formatting.
+
+Structure:
+
+RENT AGREEMENT
+
+1. PARTIES
+Explain landlord and tenant details.
+
+2. PROPERTY DETAILS
+Describe the property.
+
+3. RENT TERMS
+Explain rent payment details.
+
+4. SECURITY DEPOSIT
+
+5. AGREEMENT DURATION
+
+6. TENANT RESPONSIBILITIES
+
+7. LANDLORD RESPONSIBILITIES
+
+8. TERMINATION
+
+9. GOVERNING LAW
+
+10. SIGNATURES
+
+Details:
+
+Landlord: ${body.landlord}
+Tenant: ${body.tenant}
 Monthly Rent: ₹${body.rent}
 Property Address: ${body.address}
 
-Use this format exactly:
-
-# RENT AGREEMENT
-
-## 1. PARTIES
-Describe the landlord and tenant.
-
-## 2. PROPERTY DETAILS
-Describe the property being rented.
-
-## 3. RENT TERMS
-Explain rent amount, due date, and payment method.
-
-## 4. SECURITY DEPOSIT
-Explain deposit amount and refund rules.
-
-## 5. AGREEMENT DURATION
-Mention start date and duration.
-
-## 6. TENANT RESPONSIBILITIES
-List tenant duties.
-
-## 7. LANDLORD RESPONSIBILITIES
-List landlord duties.
-
-## 8. TERMINATION
-Explain notice period and termination rules.
-
-## 9. GOVERNING LAW
-Mention Indian jurisdiction.
-
-## 10. SIGNATURES
-Provide landlord and tenant signature sections.
-
-Use professional legal language suitable for India.
+Write in professional legal language suitable for India.
 `;
 
     const completion = await openai.chat.completions.create({
