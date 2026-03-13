@@ -1,3 +1,4 @@
+```tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -32,29 +33,48 @@ export default function RentAgreementPage() {
 
   }, []);
 
+  /* GENERATE DOCUMENT */
+
   const generateDocument = async () => {
+
+    if (!landlord || !tenant || !rent || !address) {
+      alert("Please fill all fields");
+      return;
+    }
 
     setLoading(true);
 
-    const res = await fetch("/api/generate-document", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        landlord,
-        tenant,
-        rent,
-        address
-      })
-    });
+    try {
 
-    const data = await res.json();
+      const res = await fetch("/api/generate-document", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          landlord,
+          tenant,
+          rent,
+          address
+        })
+      });
 
-    setDocument(data.document);
+      const data = await res.json();
+
+      setDocument(data.document);
+
+    } catch (error) {
+
+      console.error(error);
+      alert("Error generating document");
+
+    }
 
     setLoading(false);
+
   };
+
+  /* COPY DOCUMENT */
 
   const copyDocument = () => {
 
@@ -64,17 +84,41 @@ export default function RentAgreementPage() {
 
   };
 
-  /* PAYMENT */
+  /* START PAYMENT */
 
   const startPayment = async () => {
 
-    const res = await fetch("/api/create-checkout-session", {
-      method: "POST"
-    });
+    if (!user) {
+      alert("Please login before payment");
+      window.location.href = "/login";
+      return;
+    }
 
-    const data = await res.json();
+    if (!document) {
+      alert("Generate document first");
+      return;
+    }
 
-    window.location.href = data.url;
+    try {
+
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST"
+      });
+
+      const data = await res.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Payment session error");
+      }
+
+    } catch (error) {
+
+      console.error(error);
+      alert("Payment error");
+
+    }
 
   };
 
@@ -249,3 +293,4 @@ export default function RentAgreementPage() {
   );
 
 }
+```
