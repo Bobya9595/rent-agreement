@@ -5,31 +5,32 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
+
   try {
 
     const body = await req.json();
 
-const prompt = `
+    const prompt = `
 You are a professional legal contract writer.
 
-Write a clean RENT AGREEMENT for India.
+Write a RENT AGREEMENT for India.
 
-Do NOT use markdown symbols like #, ##, **, or bullet symbols.
+Do NOT use markdown symbols like #, ##, **.
 
 Use normal legal document formatting.
 
-Structure:
+Structure the agreement like this:
 
 RENT AGREEMENT
 
 1. PARTIES
-Explain landlord and tenant details.
+Describe landlord and tenant.
 
 2. PROPERTY DETAILS
 Describe the property.
 
 3. RENT TERMS
-Explain rent payment details.
+Explain monthly rent and payment rules.
 
 4. SECURITY DEPOSIT
 
@@ -45,21 +46,27 @@ Explain rent payment details.
 
 10. SIGNATURES
 
-Details:
+Agreement Details:
 
 Landlord: ${body.landlord}
 Tenant: ${body.tenant}
 Monthly Rent: ₹${body.rent}
 Property Address: ${body.address}
 
-Write in professional legal language suitable for India.
+Write clearly like a lawyer drafted contract for India.
 `;
 
     const completion = await openai.chat.completions.create({
+
       model: "gpt-4o-mini",
+
       messages: [
-        { role: "user", content: prompt }
+        {
+          role: "user",
+          content: prompt
+        }
       ]
+
     });
 
     const document = completion.choices[0].message.content;
@@ -70,11 +77,15 @@ Write in professional legal language suitable for India.
 
   } catch (error) {
 
-    console.error("AI generation error:", error);
+    console.error(error);
 
     return new Response(
-      JSON.stringify({ error: "Failed to generate document" }),
+      JSON.stringify({
+        error: "Failed to generate agreement"
+      }),
       { status: 500 }
     );
+
   }
+
 }
