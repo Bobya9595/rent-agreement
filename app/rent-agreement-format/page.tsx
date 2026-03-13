@@ -62,11 +62,8 @@ export default function RentAgreementPage() {
   };
 
   const copyDocument = () => {
-
     navigator.clipboard.writeText(document);
-
     alert("Document copied!");
-
   };
 
   const downloadPDF = () => {
@@ -76,11 +73,33 @@ export default function RentAgreementPage() {
       return;
     }
 
-    const pdf = new jsPDF();
+    const pdf = new jsPDF({
+      unit: "pt",
+      format: "a4"
+    });
 
-    const lines = pdf.splitTextToSize(document, 180);
+    const margin = 60;
+    const pageWidth = 480;
 
-    pdf.text(lines, 10, 20);
+    pdf.setFont("Times", "Normal");
+    pdf.setFontSize(12);
+
+    const lines = pdf.splitTextToSize(document, pageWidth);
+
+    let y = 80;
+
+    lines.forEach((line: string) => {
+
+      if (y > 750) {
+        pdf.addPage();
+        y = 80;
+      }
+
+      pdf.text(line, margin, y);
+
+      y += 18;
+
+    });
 
     pdf.save("rent-agreement.pdf");
   };
@@ -92,14 +111,22 @@ export default function RentAgreementPage() {
       return;
     }
 
+    const lines = document.split("\n");
+
+    const paragraphs = lines.map(
+      (line) =>
+        new Paragraph({
+          text: line,
+          spacing: {
+            after: 200
+          }
+        })
+    );
+
     const doc = new Document({
       sections: [
         {
-          children: [
-            new Paragraph({
-              text: document
-            })
-          ]
+          children: paragraphs
         }
       ]
     });
@@ -107,7 +134,6 @@ export default function RentAgreementPage() {
     const blob = await Packer.toBlob(doc);
 
     saveAs(blob, "rent-agreement.docx");
-
   };
 
   return (
@@ -124,7 +150,7 @@ export default function RentAgreementPage() {
 
         <div className="grid md:grid-cols-2 gap-12">
 
-          {/* LEFT SIDE FORM */}
+          {/* FORM PANEL */}
 
           <div className="bg-gray-900 p-8 rounded-xl border border-gray-800">
 
@@ -169,7 +195,7 @@ export default function RentAgreementPage() {
 
           </div>
 
-          {/* RIGHT SIDE DOCUMENT */}
+          {/* DOCUMENT PANEL */}
 
           <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
 
@@ -219,6 +245,5 @@ export default function RentAgreementPage() {
       </div>
 
     </main>
-
   );
 }
