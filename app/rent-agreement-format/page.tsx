@@ -1,13 +1,14 @@
-```tsx
+
 "use client";
 
 import { useState, useEffect } from "react";
-import Navbar from "../../components/Navbar";
-import DocumentViewer from "../../components/DocumentViewer";
-
 import jsPDF from "jspdf";
-import { auth } from "../../lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+
+import Navbar from "@/components/Navbar";
+import DocumentViewer from "@/components/DocumentViewer";
+
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged, User } from "firebase/auth";
 
 export default function RentAgreementPage() {
 
@@ -18,7 +19,7 @@ export default function RentAgreementPage() {
 
   const [documentText, setDocumentText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -28,7 +29,7 @@ export default function RentAgreementPage() {
     return () => unsubscribe();
   }, []);
 
-  /* GENERATE DOCUMENT */
+  /* Generate Agreement */
 
   const generateDocument = async () => {
 
@@ -64,18 +65,17 @@ export default function RentAgreementPage() {
     }
 
     setLoading(false);
+
   };
 
-  /* COPY DOCUMENT */
+  /* Copy document */
 
   const copyDocument = () => {
-
     navigator.clipboard.writeText(documentText);
-    alert("Document copied");
-
+    alert("Copied to clipboard");
   };
 
-  /* START PAYMENT */
+  /* Start Stripe Payment */
 
   const startPayment = async () => {
 
@@ -108,7 +108,7 @@ export default function RentAgreementPage() {
 
   };
 
-  /* DOWNLOAD PDF */
+  /* Download PDF */
 
   const downloadPDF = () => {
 
@@ -118,12 +118,12 @@ export default function RentAgreementPage() {
     });
 
     const margin = 60;
-    const pageWidth = 480;
+    const width = 480;
 
     pdf.setFont("Times", "Normal");
     pdf.setFontSize(12);
 
-    const lines = pdf.splitTextToSize(documentText, pageWidth);
+    const lines = pdf.splitTextToSize(documentText, width);
 
     let y = 80;
 
@@ -135,7 +135,6 @@ export default function RentAgreementPage() {
       }
 
       pdf.text(line, margin, y);
-
       y += 18;
 
     });
@@ -158,7 +157,7 @@ export default function RentAgreementPage() {
 
         <div className="grid md:grid-cols-2 gap-12">
 
-          {/* FORM PANEL */}
+          {/* FORM */}
 
           <div className="bg-gray-900 p-8 rounded-xl border border-gray-800">
 
@@ -203,17 +202,16 @@ export default function RentAgreementPage() {
 
           </div>
 
-          {/* DOCUMENT PANEL */}
+          {/* DOCUMENT PREVIEW */}
 
           <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
 
             {documentText ? (
 
               <>
-
                 <DocumentViewer content={documentText} />
 
-                <div className="flex gap-4 mt-6">
+                <div className="flex gap-4 mt-6 flex-wrap">
 
                   <button
                     onClick={copyDocument}
@@ -237,7 +235,6 @@ export default function RentAgreementPage() {
                   </button>
 
                 </div>
-
               </>
 
             ) : (
@@ -257,6 +254,5 @@ export default function RentAgreementPage() {
     </main>
 
   );
-
 }
-```
+
