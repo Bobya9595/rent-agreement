@@ -2,11 +2,12 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2024-06-20",
 });
 
 export async function POST() {
+
   try {
 
     const session = await stripe.checkout.sessions.create({
@@ -19,9 +20,9 @@ export async function POST() {
           price_data: {
             currency: "inr",
             product_data: {
-              name: "Rent Agreement Download",
+              name: "LegalFormat Rent Agreement Download",
             },
-            unit_amount: 1000
+            unit_amount: 1000,
           },
           quantity: 1,
         },
@@ -29,20 +30,17 @@ export async function POST() {
 
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/rent-agreement-format`,
-
     });
 
     return NextResponse.json({ url: session.url });
 
   } catch (error: any) {
 
-    console.error("Stripe error:", error);
+    console.error("Stripe Error:", error.message);
 
     return NextResponse.json(
       { error: error.message },
       { status: 500 }
     );
-
   }
 }
-
