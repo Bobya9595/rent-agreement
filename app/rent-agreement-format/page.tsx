@@ -41,7 +41,6 @@ export default function RentAgreementPage() {
       const data = await res.json();
 
       setAgreement(data.document);
-
       localStorage.setItem("agreement", data.document);
 
     } catch {
@@ -86,9 +85,7 @@ export default function RentAgreementPage() {
       handler: function () {
         window.location.href = "/success";
       },
-      theme: {
-        color: "#7c3aed",
-      },
+      theme: { color: "#7c3aed" },
     };
 
     const rzp = new (window as any).Razorpay(options);
@@ -103,7 +100,6 @@ export default function RentAgreementPage() {
         Legal<span className="text-purple-500">Format</span>
       </h1>
 
-      {/* GRID */}
       <div className="grid grid-cols-2 gap-10 items-start">
 
         {/* LEFT FORM */}
@@ -160,24 +156,27 @@ export default function RentAgreementPage() {
           {agreement ? (
             <div className="relative flex-1">
 
-              {/* SCROLL AREA */}
+              {/* SCROLLABLE AREA */}
               <div className="w-full h-full overflow-y-auto flex justify-center p-6">
 
                 {/* DOCUMENT */}
-                <div className="w-[520px] bg-white text-black rounded-lg shadow-2xl p-8 text-sm leading-relaxed">
+                <div className="w-[520px] bg-white text-black rounded-lg shadow-2xl p-8 text-sm leading-7 font-serif relative">
 
-                  <pre className="whitespace-pre-wrap font-serif">
+                  <pre className="whitespace-pre-wrap">
                     {agreement}
                   </pre>
+
+                  {/* FADE EFFECT */}
+                  <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent"></div>
 
                 </div>
 
               </div>
 
-              {/* PAYWALL FIXED */}
-              <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+              {/* PAYWALL */}
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
 
-                <div className="bg-[#0f172a] border border-white/10 p-8 rounded-2xl text-center shadow-xl w-[320px] pointer-events-auto">
+                <div className="bg-[#0f172a] border border-white/10 p-8 rounded-2xl text-center shadow-xl w-[320px]">
 
                   <p className="text-lg font-semibold mb-2">
                     Unlock full agreement
@@ -208,7 +207,6 @@ export default function RentAgreementPage() {
         </div>
 
       </div>
-
     </main>
   );
 }
