@@ -4,13 +4,7 @@ export const runtime = "nodejs";
 
 export async function POST() {
   try {
-    const key = process.env.STRIPE_SECRET_KEY;
-
-    if (!key) {
-      return new Response("❌ NO STRIPE KEY FOUND", { status: 500 });
-    }
-
-    const stripe = new Stripe(key);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -18,7 +12,9 @@ export async function POST() {
         {
           price_data: {
             currency: "inr",
-            product_data: { name: "Legal Agreement" },
+            product_data: {
+              name: "Legal Agreement Download",
+            },
             unit_amount: 1000,
           },
           quantity: 1,
@@ -28,9 +24,9 @@ export async function POST() {
       cancel_url: "https://legalformat.in",
     });
 
-    return new Response(session.url || "NO URL");
+    return Response.json({ url: session.url });
 
   } catch (err: any) {
-    return new Response(`❌ ERROR: ${err.message}`, { status: 500 });
+    return Response.json({ error: err.message }, { status: 500 });
   }
 }
