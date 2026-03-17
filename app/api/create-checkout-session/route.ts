@@ -7,7 +7,7 @@ export async function POST() {
     const key = process.env.STRIPE_SECRET_KEY;
 
     if (!key) {
-      throw new Error("Missing Stripe Key");
+      return new Response("❌ NO STRIPE KEY FOUND", { status: 500 });
     }
 
     const stripe = new Stripe(key);
@@ -28,12 +28,9 @@ export async function POST() {
       cancel_url: "https://legalformat.in",
     });
 
-    return Response.json({ url: session.url });
+    return new Response(session.url || "NO URL");
 
   } catch (err: any) {
-    console.log("FINAL ERROR:", err);
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-    });
+    return new Response(`❌ ERROR: ${err.message}`, { status: 500 });
   }
 }
