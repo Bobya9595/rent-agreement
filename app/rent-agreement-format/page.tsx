@@ -1,217 +1,182 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { auth } from "../../lib/firebase";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import RentAgreementPDF from "@/components/RentAgreementPDF";
 
 export default function RentAgreementPage() {
-  const router = useRouter();
+  const [formData, setFormData] = useState({
+    date: "",
+    landlord: "",
+    tenant: "",
+    address: "",
+    rent: "",
+    rules: "",
+  });
 
-  const [landlord, setLandlord] = useState("");
-  const [tenant, setTenant] = useState("");
-  const [rent, setRent] = useState("");
-  const [rules, setRules] = useState("");
-  const [agreement, setAgreement] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [generated, setGenerated] = useState(false);
 
-  // Razorpay loader
-  const loadRazorpay = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
+  const handleChange = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Generate Agreement
-  const generateAgreement = async () => {
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/generate-document", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ landlord, tenant, rent, rules }),
-      });
-
-      const data = await res.json();
-
-      setAgreement(data.document);
-
-      // Save for download
-      localStorage.setItem("agreement", data.document);
-
-    } catch {
-      alert("Error generating agreement");
-    }
-
-    setLoading(false);
-  };
-
-  // Payment
-  const handlePayment = async () => {
-    if (!auth.currentUser) {
-      router.push("/login");
-      return;
-    }
-
-    const loaded = await loadRazorpay();
-
-    if (!loaded) {
-      alert("Razorpay failed");
-      return;
-    }
-
-    const res = await fetch("/api/create-order", {
-      method: "POST",
-    });
-
-    const order = await res.json();
-
-    if (!order.id) {
-      alert("Order failed");
-      return;
-    }
-
-    const options = {
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      amount: order.amount,
-      currency: order.currency,
-      name: "LegalFormat",
-      description: "Download Agreement",
-      order_id: order.id,
-
-      handler: function () {
-        window.location.href = "/success";
-      },
-
-      theme: {
-        color: "#7c3aed",
-      },
-    };
-
-    const rzp = new (window as any).Razorpay(options);
-    rzp.open();
+  const handleGenerate = () => {
+    setGenerated(true);
   };
 
   return (
-    <main className="min-h-screen bg-[#020617] text-white px-10 py-12">
-
+    <div className="min-h-screen bg-[#020617] text-white p-6">
+      
       {/* HEADER */}
-      <h1 className="text-3xl font-bold mb-10">
+      <h1 className="text-2xl font-bold mb-6">
         Legal<span className="text-purple-500">Format</span>
       </h1>
 
-      {/* GRID */}
-      <div className="grid grid-cols-2 gap-10 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {/* LEFT FORM */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
-
-          <h2 className="text-xl font-semibold mb-6">
+        <div className="bg-[#0f172a] p-6 rounded-2xl border border-gray-800 shadow-xl">
+          <h2 className="text-lg font-semibold mb-4">
             Rent Agreement Details
           </h2>
 
-          <div className="flex flex-col gap-4">
+          <input
+            name="date"
+            placeholder="Agreement Date"
+            onChange={handleChange}
+            className="w-full mb-3 p-3 rounded bg-[#1e293b] outline-none"
+          />
 
-            <input
-              placeholder="Landlord Name"
-              className="p-3 rounded bg-gray-800 border border-gray-700"
-              onChange={(e) => setLandlord(e.target.value)}
-            />
+          <input
+            name="landlord"
+            placeholder="Landlord Name"
+            onChange={handleChange}
+            className="w-full mb-3 p-3 rounded bg-[#1e293b] outline-none"
+          />
 
-            <input
-              placeholder="Tenant Name"
-              className="p-3 rounded bg-gray-800 border border-gray-700"
-              onChange={(e) => setTenant(e.target.value)}
-            />
+          <input
+            name="tenant"
+            placeholder="Tenant Name"
+            onChange={handleChange}
+            className="w-full mb-3 p-3 rounded bg-[#1e293b] outline-none"
+          />
 
-            <input
-              placeholder="Monthly Rent (₹)"
-              className="p-3 rounded bg-gray-800 border border-gray-700"
-              onChange={(e) => setRent(e.target.value)}
-            />
+          <input
+            name="address"
+            placeholder="Property Address"
+            onChange={handleChange}
+            className="w-full mb-3 p-3 rounded bg-[#1e293b] outline-none"
+          />
 
-            <textarea
-              placeholder="Rules (optional)"
-              className="p-3 rounded bg-gray-800 border border-gray-700 h-24"
-              onChange={(e) => setRules(e.target.value)}
-            />
+          <input
+            name="rent"
+            placeholder="Monthly Rent"
+            onChange={handleChange}
+            className="w-full mb-3 p-3 rounded bg-[#1e293b] outline-none"
+          />
 
-            <button
-              onClick={generateAgreement}
-              className="bg-gradient-to-r from-purple-500 to-indigo-600 py-3 rounded-xl font-semibold hover:scale-105 transition shadow-lg"
-            >
-              {loading ? "Generating..." : "Generate Agreement"}
-            </button>
+          <textarea
+            name="rules"
+            placeholder="Rules (optional)"
+            onChange={handleChange}
+            className="w-full mb-4 p-3 rounded bg-[#1e293b] outline-none"
+          />
 
-          </div>
+          {/* GENERATE BUTTON */}
+          <button
+            onClick={handleGenerate}
+            className="w-full py-3 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 hover:opacity-90 transition"
+          >
+            Generate Agreement
+          </button>
+
+          {/* DOWNLOAD BUTTON */}
+          {generated && (
+            <div className="mt-4">
+              <PDFDownloadLink
+                document={<RentAgreementPDF data={formData} />}
+                fileName="rent-agreement.pdf"
+                className="block text-center py-3 rounded-lg bg-green-600 hover:bg-green-700 transition"
+              >
+                {({ loading }) =>
+                  loading ? "Generating PDF..." : "Download PDF"
+                }
+              </PDFDownloadLink>
+            </div>
+          )}
         </div>
 
         {/* RIGHT PREVIEW */}
-        <div className="bg-[#0b1220] border border-white/10 rounded-2xl shadow-xl h-[600px] flex flex-col overflow-hidden">
-
-          {/* HEADER */}
-          <div className="px-5 py-3 border-b border-white/10 text-sm text-gray-400">
+        <div className="bg-[#020617] border border-gray-800 rounded-2xl shadow-xl overflow-hidden">
+          
+          <div className="p-3 border-b border-gray-800 text-sm text-gray-400">
             Agreement Preview
           </div>
 
-          {agreement ? (
-            <div className="relative flex-1 flex items-center justify-center">
+          {/* 🔥 SCROLLABLE PREVIEW BOX */}
+          <div className="h-[600px] overflow-y-auto p-6 bg-white text-black">
 
-              {/* SCROLL AREA */}
-              <div className="w-full h-full overflow-y-auto flex justify-center p-6">
+            {!generated ? (
+              <p className="text-gray-400">
+                Fill details and click Generate...
+              </p>
+            ) : (
+              <div className="space-y-4 text-sm leading-6">
 
-                {/* DOCUMENT CARD */}
-                <div className="w-[520px] min-h-full bg-white text-black rounded-lg shadow-2xl p-8 leading-relaxed text-sm">
+                <h2 className="text-center text-lg font-bold">
+                  RENT AGREEMENT
+                </h2>
 
-                  <pre className="whitespace-pre-wrap font-serif">
-                    {agreement}
-                  </pre>
+                <p>
+                  This Rent Agreement is made on{" "}
+                  <b>{formData.date}</b>.
+                </p>
 
+                <p>
+                  Between <b>{formData.landlord}</b> (Landlord)
+                </p>
+
+                <p>
+                  And <b>{formData.tenant}</b> (Tenant)
+                </p>
+
+                <p>
+                  Property Address: <b>{formData.address}</b>
+                </p>
+
+                <p>
+                  Monthly Rent: ₹{formData.rent}
+                </p>
+
+                {formData.rules && (
+                  <p>
+                    Rules: <b>{formData.rules}</b>
+                  </p>
+                )}
+
+                <p>
+                  Both parties agree to the terms mentioned above.
+                </p>
+
+                {/* SIGNATURE */}
+                <div className="flex justify-between mt-16">
+                  <div className="text-center">
+                    <div className="border-t w-40 mx-auto"></div>
+                    <p>Landlord</p>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="border-t w-40 mx-auto"></div>
+                    <p>Tenant</p>
+                  </div>
                 </div>
 
               </div>
-
-              {/* PAYWALL */}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-
-                <div className="bg-[#0f172a] border border-white/10 p-8 rounded-2xl text-center shadow-xl w-[320px]">
-
-                  <p className="text-lg font-semibold mb-2">
-                    Unlock full agreement
-                  </p>
-
-                  <p className="text-sm text-gray-400 mb-6">
-                    Pay ₹1 to download document
-                  </p>
-
-                  <button
-                    onClick={handlePayment}
-                    className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 py-3 rounded-xl font-semibold hover:scale-105 transition shadow-lg"
-                  >
-                    Pay ₹1 & Download
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
-          ) : (
-            <div className="flex items-center justify-center flex-1 text-gray-500 text-sm">
-              Generate agreement to preview
-            </div>
-          )}
-
+            )}
+          </div>
         </div>
 
       </div>
-
-    </main>
+    </div>
   );
 }
