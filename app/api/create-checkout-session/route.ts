@@ -7,17 +7,7 @@ export async function POST() {
     const key = process.env.STRIPE_SECRET_KEY;
 
     if (!key) {
-      return new Response(
-        JSON.stringify({ error: "NO_KEY_FOUND" }),
-        { status: 500 }
-      );
-    }
-
-    if (!key.startsWith("sk_")) {
-      return new Response(
-        JSON.stringify({ error: "INVALID_KEY_FORMAT" }),
-        { status: 500 }
-      );
+      throw new Error("Missing Stripe Key");
     }
 
     const stripe = new Stripe(key);
@@ -41,9 +31,9 @@ export async function POST() {
     return Response.json({ url: session.url });
 
   } catch (err: any) {
-    return new Response(
-      JSON.stringify({ error: err.message }),
-      { status: 500 }
-    );
+    console.log("FINAL ERROR:", err);
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+    });
   }
 }
