@@ -8,6 +8,10 @@ export async function POST() {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+
+      // ✅ ADD THIS LINE (IMPORTANT FIX)
+      payment_method_types: ["card"],
+
       line_items: [
         {
           price_data: {
@@ -20,6 +24,7 @@ export async function POST() {
           quantity: 1,
         },
       ],
+
       success_url: "https://legalformat.in/success",
       cancel_url: "https://legalformat.in",
     });
