@@ -1,40 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+export default function Success() {
+  const downloadPDF = () => {
+    const text = localStorage.getItem("agreement");
+    const blob = new Blob([text || ""], { type: "application/pdf" });
 
-export default function SuccessPage() {
-  const [agreement, setAgreement] = useState("");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "agreement.pdf";
+    link.click();
+  };
 
-  useEffect(() => {
-    const data = localStorage.getItem("agreement");
-    if (data) setAgreement(data);
-  }, []);
+  const downloadWord = () => {
+    const text = localStorage.getItem("agreement");
+    const blob = new Blob([text || ""], { type: "application/msword" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "agreement.doc";
+    link.click();
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      <div className="text-center">
+    <div className="h-screen flex flex-col items-center justify-center bg-black text-white gap-4">
+      <h1 className="text-3xl">Payment Successful 🎉</h1>
 
-        <h1 className="text-3xl mb-4">Payment Successful 🎉</h1>
+      <button onClick={downloadPDF} className="bg-purple-600 px-6 py-2 rounded">
+        Download PDF
+      </button>
 
-        <div className="flex gap-4 justify-center">
-
-          <a
-            href={`/api/download?text=${encodeURIComponent(agreement)}`}
-            className="bg-purple-600 px-6 py-3 rounded"
-          >
-            Download PDF
-          </a>
-
-          <a
-            href={`/api/download?type=word&text=${encodeURIComponent(agreement)}`}
-            className="bg-blue-600 px-6 py-3 rounded"
-          >
-            Download Word
-          </a>
-
-        </div>
-
-      </div>
+      <button onClick={downloadWord} className="bg-blue-600 px-6 py-2 rounded">
+        Download Word
+      </button>
     </div>
   );
 }
