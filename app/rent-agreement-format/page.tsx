@@ -15,43 +15,53 @@ export default function RentAgreementPage() {
   const [agreement, setAgreement] = useState("");
   const [loading, setLoading] = useState(false);
 
-  /* GENERATE AGREEMENT */
+  /* ✅ GENERATE AGREEMENT */
   const generateAgreement = async () => {
     setLoading(true);
 
-    const res = await fetch("/api/generate-document", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        landlord,
-        tenant,
-        rent,
-        rules,
-      }),
-    });
+    try {
+      const res = await fetch("/api/generate-document", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ landlord, tenant, rent, rules }),
+      });
 
-    const data = await res.json();
-    setAgreement(data.document);
+      const data = await res.json();
+      setAgreement(data.document);
+    } catch (err) {
+      alert("Error generating agreement");
+    }
+
     setLoading(false);
   };
 
-  /* PAYMENT */
+  /* ✅ PAYMENT */
   const handlePayment = async () => {
+    console.log("CLICKED PAY BUTTON"); // debug
+
     if (!auth.currentUser) {
       router.push("/login");
       return;
     }
 
-    const res = await fetch("/api/create-checkout-session", {
-      method: "POST",
-    });
+    try {
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+      });
 
-    const data = await res.json();
+      const data = await res.json();
+      console.log("Stripe response:", data);
 
-    if (data.url) {
-      window.location.href = data.url;
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Payment failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Payment error");
     }
   };
 
@@ -63,7 +73,7 @@ export default function RentAgreementPage() {
         Legal<span className="text-purple-500">Format</span>
       </h1>
 
-      {/* MAIN GRID */}
+      {/* GRID */}
       <div className="grid grid-cols-2 gap-10">
 
         {/* LEFT FORM */}
@@ -93,14 +103,14 @@ export default function RentAgreementPage() {
             />
 
             <textarea
-              placeholder="Optional rules (example: no pets, 11 month agreement)"
+              placeholder="Optional rules"
               className="p-3 rounded bg-gray-800 border border-gray-700 h-24"
               onChange={(e) => setRules(e.target.value)}
             />
 
             <button
               onClick={generateAgreement}
-              className="bg-gradient-to-r from-purple-500 to-purple-700 py-3 rounded-lg"
+              className="bg-gradient-to-r from-purple-500 to-purple-700 py-3 rounded-lg font-semibold"
             >
               {loading ? "Generating..." : "Generate Agreement"}
             </button>
@@ -109,40 +119,50 @@ export default function RentAgreementPage() {
         </div>
 
         {/* RIGHT PREVIEW */}
-        <div className="relative bg-white text-black rounded-xl p-8 shadow-xl overflow-hidden">
+        <div className="relative bg-white text-black rounded-xl shadow-xl overflow-hidden">
 
-          <h2 className="text-lg font-semibold mb-4">
-            Agreement Preview
-          </h2>
+          {/* HEADER */}
+          <div className="p-6 border-b">
+            <h2 className="text-lg font-semibold">Agreement Preview</h2>
+          </div>
 
           {agreement ? (
-            <>
-              {/* 🔥 PAY BUTTON (TOP CENTER - CLICKABLE) */}
-              <div className="absolute top-20 left-1/2 -translate-x-1/2 z-30 text-center">
-                <p className="text-white mb-3 text-sm">
-                  Unlock full agreement for ₹10
-                </p>
+            <div className="relative">
 
-                <button
-                  onClick={handlePayment}
-                  className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg text-white shadow-lg"
-                >
-                  Pay ₹10 & Download
-                </button>
-              </div>
-
-              {/* 🔒 BLUR OVERLAY (DOES NOT BLOCK CLICK) */}
-              <div className="absolute inset-0 backdrop-blur-md bg-black/40 z-20 pointer-events-none rounded-xl" />
-
-              {/* 📄 DOCUMENT */}
-              <div className="relative z-10">
+              {/* DOCUMENT */}
+              <div className="p-6 blur-sm select-none">
                 <pre className="whitespace-pre-wrap text-sm leading-relaxed">
                   {agreement}
                 </pre>
               </div>
-            </>
+
+              {/* PAYWALL */}
+              <div className="absolute inset-0 flex items-center justify-center bg-black/60">
+
+                <div className="bg-[#0f172a] text-white p-8 rounded-xl text-center shadow-2xl w-[300px]">
+
+                  <p className="mb-4 text-lg font-semibold">
+                    Unlock full agreement
+                  </p>
+
+                  <p className="mb-6 text-sm text-gray-300">
+                    Pay ₹10 to download
+                  </p>
+
+                  <button
+                    onClick={handlePayment}
+                    className="w-full bg-gradient-to-r from-purple-500 to-purple-700 py-3 rounded-lg font-semibold hover:scale-105 transition"
+                  >
+                    Pay ₹10 & Download
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
           ) : (
-            <p className="text-gray-500">
+            <p className="p-6 text-gray-500">
               Generate the agreement to preview the document.
             </p>
           )}
