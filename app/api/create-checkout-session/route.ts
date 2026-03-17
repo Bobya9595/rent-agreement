@@ -1,9 +1,15 @@
 import Stripe from "stripe";
 
+export const runtime = "nodejs";
+
 export async function POST() {
   try {
-    // ✅ SAFE INIT
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+    // 🔥 CHECK ENV FIRST
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error("Missing STRIPE_SECRET_KEY");
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -25,13 +31,17 @@ export async function POST() {
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
     });
 
-    return Response.json({ url: session.url });
+    console.log("✅ SESSION CREATED:", session.url);
 
-  } catch (error: any) {
-    console.error("STRIPE FULL ERROR:", error);
+    return new Response(JSON.stringify({ url: session.url }), {
+      status: 200,
+    });
 
-    return Response.json(
-      { error: error.message },
+  } catch (err: any) {
+    console.error("❌ STRIPE ERROR FULL:", err);
+
+    return new Response(
+      JSON.stringify({ error: err.message }),
       { status: 500 }
     );
   }
