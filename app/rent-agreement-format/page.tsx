@@ -25,7 +25,7 @@ export default function RentAgreementPage() {
     });
   };
 
-  // ✅ Generate Agreement + Save
+  // ✅ Generate Agreement
   const generateAgreement = async () => {
     setLoading(true);
 
@@ -42,7 +42,7 @@ export default function RentAgreementPage() {
 
       setAgreement(data.document);
 
-      // ✅ SAVE AGREEMENT FOR DOWNLOAD
+      // SAVE FOR DOWNLOAD
       localStorage.setItem("agreement", data.document);
 
     } catch {
@@ -100,67 +100,111 @@ export default function RentAgreementPage() {
 
   return (
     <main className="min-h-screen bg-[#020617] text-white px-10 py-12">
+
+      {/* HEADER */}
       <h1 className="text-3xl font-bold mb-10">
         Legal<span className="text-purple-500">Format</span>
       </h1>
 
-      <div className="grid grid-cols-2 gap-10">
+      {/* GRID */}
+      <div className="grid grid-cols-2 gap-10 items-start">
 
-        {/* FORM */}
-        <div className="bg-white/5 p-8 rounded-xl">
-          <h2 className="text-xl mb-6">Rent Agreement Details</h2>
+        {/* LEFT FORM */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
 
-          <input
-            placeholder="Landlord"
-            className="p-3 mb-4 w-full bg-gray-800"
-            onChange={(e) => setLandlord(e.target.value)}
-          />
+          <h2 className="text-xl font-semibold mb-6">
+            Rent Agreement Details
+          </h2>
 
-          <input
-            placeholder="Tenant"
-            className="p-3 mb-4 w-full bg-gray-800"
-            onChange={(e) => setTenant(e.target.value)}
-          />
+          <div className="flex flex-col gap-4">
 
-          <input
-            placeholder="Rent"
-            className="p-3 mb-4 w-full bg-gray-800"
-            onChange={(e) => setRent(e.target.value)}
-          />
+            <input
+              placeholder="Landlord Name"
+              className="p-3 rounded bg-gray-800 border border-gray-700"
+              onChange={(e) => setLandlord(e.target.value)}
+            />
 
-          <textarea
-            placeholder="Rules"
-            className="p-3 mb-4 w-full bg-gray-800"
-            onChange={(e) => setRules(e.target.value)}
-          />
+            <input
+              placeholder="Tenant Name"
+              className="p-3 rounded bg-gray-800 border border-gray-700"
+              onChange={(e) => setTenant(e.target.value)}
+            />
 
-          <button
-            onClick={generateAgreement}
-            className="bg-purple-600 px-6 py-3 rounded-lg"
-          >
-            {loading ? "Generating..." : "Generate Agreement"}
-          </button>
+            <input
+              placeholder="Monthly Rent (₹)"
+              className="p-3 rounded bg-gray-800 border border-gray-700"
+              onChange={(e) => setRent(e.target.value)}
+            />
+
+            <textarea
+              placeholder="Rules (optional)"
+              className="p-3 rounded bg-gray-800 border border-gray-700 h-24"
+              onChange={(e) => setRules(e.target.value)}
+            />
+
+            <button
+              onClick={generateAgreement}
+              className="bg-gradient-to-r from-purple-500 to-indigo-600 py-3 rounded-xl font-semibold hover:scale-105 transition"
+            >
+              {loading ? "Generating..." : "Generate Agreement"}
+            </button>
+
+          </div>
         </div>
 
-        {/* PREVIEW */}
-        <div className="relative bg-white text-black rounded-xl p-6">
+        {/* RIGHT PREVIEW */}
+        <div className="relative bg-[#0f172a] text-white rounded-2xl shadow-2xl border border-white/10 h-[520px] flex flex-col">
+
+          {/* HEADER */}
+          <div className="p-4 border-b border-white/10">
+            <h2 className="text-sm text-gray-300">
+              Agreement Preview
+            </h2>
+          </div>
 
           {agreement ? (
-            <>
-              <pre className="blur-sm">{agreement}</pre>
+            <div className="relative flex-1">
 
-              <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-                <button
-                  onClick={handlePayment}
-                  className="bg-purple-600 text-white px-6 py-3 rounded-lg"
-                >
-                  Pay ₹1 & Download
-                </button>
+              {/* SCROLLABLE PREVIEW */}
+              <div className="p-6 h-full overflow-y-auto blur-sm">
+
+                <pre className="whitespace-pre-wrap text-sm leading-relaxed text-gray-200">
+                  {agreement}
+                </pre>
+
               </div>
-            </>
+
+              {/* PAYWALL */}
+              <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+
+                <div className="bg-gradient-to-br from-[#1e293b] to-[#020617] border border-white/10 p-8 rounded-2xl text-center shadow-xl w-[320px]">
+
+                  <p className="mb-2 text-lg font-semibold">
+                    Unlock full agreement
+                  </p>
+
+                  <p className="mb-6 text-sm text-gray-400">
+                    Pay ₹1 to download full document
+                  </p>
+
+                  <button
+                    onClick={handlePayment}
+                    className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 py-3 rounded-xl font-semibold hover:scale-105 transition"
+                  >
+                    Pay ₹1 & Download
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
           ) : (
-            <p>Generate agreement to preview</p>
+            <div className="flex items-center justify-center flex-1 text-gray-500 text-sm">
+              Generate agreement to preview
+            </div>
           )}
+
         </div>
 
       </div>
