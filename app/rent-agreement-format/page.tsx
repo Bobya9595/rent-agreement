@@ -90,7 +90,7 @@ export default function RentAgreementPage() {
             Generate Agreement
           </button>
 
-          {/* DOWNLOAD BUTTON */}
+          {/* DOWNLOAD BUTTON (FIXED TS ERROR) */}
           {generated && (
             <div className="mt-4">
               <PDFDownloadLink
@@ -98,9 +98,7 @@ export default function RentAgreementPage() {
                 fileName="rent-agreement.pdf"
                 className="block text-center py-3 rounded-lg bg-green-600 hover:bg-green-700 transition"
               >
-                {({ loading }) =>
-                  loading ? "Generating PDF..." : "Download PDF"
-                }
+                <span>Download PDF</span>
               </PDFDownloadLink>
             </div>
           )}
@@ -113,7 +111,7 @@ export default function RentAgreementPage() {
             Agreement Preview
           </div>
 
-          {/* 🔥 SCROLLABLE PREVIEW BOX */}
+          {/* SCROLLABLE PREVIEW */}
           <div className="h-[600px] overflow-y-auto p-6 bg-white text-black">
 
             {!generated ? (
