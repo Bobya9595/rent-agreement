@@ -8,18 +8,16 @@ export async function POST() {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-
-      // ✅ REQUIRED
       payment_method_types: ["card"],
 
       line_items: [
         {
           price_data: {
-            currency: "usd", // ✅ FIX (avoid India restriction)
+            currency: "usd", // ✅ IMPORTANT FIX
             product_data: {
               name: "Legal Agreement Download",
             },
-            unit_amount: 100, // $1 (instead of ₹10)
+            unit_amount: 100, // $1
           },
           quantity: 1,
         },
@@ -32,9 +30,6 @@ export async function POST() {
     return Response.json({ url: session.url });
 
   } catch (err: any) {
-    return Response.json(
-      { error: err.message },
-      { status: 500 }
-    );
+    return Response.json({ error: err.message }, { status: 500 });
   }
 }
