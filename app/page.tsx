@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-white text-gray-900 overflow-hidden">
@@ -17,26 +21,46 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section className="relative px-6 mt-20 text-center">
+      <motion.section
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="relative px-6 mt-20 text-center"
+      >
 
-        {/* GLOW BACKGROUND */}
+        {/* GLOW */}
         <div className="absolute inset-0 -z-10 flex justify-center">
           <div className="w-[650px] h-[650px] bg-blue-500/20 blur-3xl rounded-full"></div>
         </div>
 
-        <h1 className="text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight"
+        >
           Generate Legal Policies
           <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
             in Seconds with AI
           </span>
-        </h1>
+        </motion.h1>
 
-        <p className="mt-6 text-lg text-gray-600 max-w-xl mx-auto">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mt-6 text-lg text-gray-600 max-w-xl mx-auto"
+        >
           Built for Indian startups, freelancers, and businesses.
           No legal knowledge required.
-        </p>
+        </motion.p>
 
-        <div className="mt-8 flex justify-center gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-8 flex justify-center gap-4"
+        >
           <a
             href="/generate"
             className="px-7 py-3 bg-blue-600 text-white rounded-2xl shadow-lg hover:scale-105 transition"
@@ -47,18 +71,23 @@ export default function Home() {
           <button className="px-7 py-3 border rounded-2xl hover:bg-gray-100 transition">
             Live Demo
           </button>
-        </div>
+        </motion.div>
 
         <p className="mt-4 text-sm text-gray-400">
           Takes 30 seconds • No signup required
         </p>
-      </section>
+      </motion.section>
 
-      {/* PRODUCT PREVIEW (KEY SECTION) */}
-      <section className="mt-16 flex justify-center px-6">
+      {/* PRODUCT PREVIEW */}
+      <motion.section
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="mt-16 flex justify-center px-6"
+      >
         <div className="bg-white border shadow-2xl rounded-3xl p-6 w-full max-w-4xl">
 
-          {/* HEADER */}
           <div className="flex justify-between items-center mb-4">
             <span className="text-sm text-gray-500">
               Privacy Policy Preview
@@ -69,13 +98,9 @@ export default function Home() {
             </span>
           </div>
 
-          {/* DOCUMENT PREVIEW */}
-          <div className="h-[260px] overflow-hidden rounded-xl border bg-white p-4 text-left text-sm text-gray-700 relative">
+          <div className="h-[260px] overflow-hidden rounded-xl border bg-white p-4 text-sm text-gray-700 relative">
 
-            <p className="font-semibold text-gray-900">
-              Privacy Policy
-            </p>
-
+            <p className="font-semibold text-gray-900">Privacy Policy</p>
             <p className="text-xs text-gray-400 mt-1">
               Effective Date: June 2024
             </p>
@@ -85,54 +110,49 @@ export default function Home() {
             <p className="font-semibold">1. Introduction</p>
             <p className="text-gray-600 mt-1">
               We value your privacy and are committed to protecting your personal
-              information in accordance with applicable Indian laws.
+              information in accordance with applicable laws.
             </p>
 
             <p className="font-semibold mt-3">2. Information We Collect</p>
             <p className="text-gray-600 mt-1">
-              We may collect personal data such as name, email, and usage data
-              when you interact with our website.
+              We may collect personal data such as name, email, and usage data.
             </p>
 
             <p className="font-semibold mt-3">3. Use of Information</p>
             <p className="text-gray-600 mt-1">
-              The collected data is used to improve services and enhance user experience.
+              The collected data is used to improve services.
             </p>
 
-            {/* FADE */}
             <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white to-transparent"></div>
           </div>
 
         </div>
-      </section>
+      </motion.section>
 
       {/* FEATURES */}
       <section className="mt-28 px-10 grid md:grid-cols-3 gap-10">
-
-        <div className="p-8 rounded-3xl bg-gradient-to-b from-white to-gray-50 border shadow hover:shadow-xl transition">
-          <h3 className="text-xl font-semibold">⚡ Instant AI Generation</h3>
-          <p className="mt-3 text-gray-600">
-            Generate policies in seconds using AI automation.
-          </p>
-        </div>
-
-        <div className="p-8 rounded-3xl bg-gradient-to-b from-white to-gray-50 border shadow hover:shadow-xl transition">
-          <h3 className="text-xl font-semibold">🇮🇳 Built for India</h3>
-          <p className="mt-3 text-gray-600">
-            Designed for Indian compliance and businesses.
-          </p>
-        </div>
-
-        <div className="p-8 rounded-3xl bg-gradient-to-b from-white to-gray-50 border shadow hover:shadow-xl transition">
-          <h3 className="text-xl font-semibold">🔒 Secure & Private</h3>
-          <p className="mt-3 text-gray-600">
-            Your data is safe and never stored.
-          </p>
-        </div>
-
+        {[
+          "⚡ Instant AI Generation",
+          "🇮🇳 Built for India",
+          "🔒 Secure & Private"
+        ].map((item, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.2 }}
+            viewport={{ once: true }}
+            className="p-8 rounded-3xl bg-gradient-to-b from-white to-gray-50 border shadow hover:shadow-xl transition"
+          >
+            <h3 className="text-xl font-semibold">{item}</h3>
+            <p className="mt-3 text-gray-600">
+              Generate policies instantly with AI-powered automation.
+            </p>
+          </motion.div>
+        ))}
       </section>
 
-      {/* TRUST / STATS */}
+      {/* STATS */}
       <section className="mt-28 text-center">
         <div className="flex justify-center gap-12 text-gray-700">
           <div>
@@ -158,9 +178,7 @@ export default function Home() {
 
           <h3 className="text-xl font-semibold">Simple Pricing</h3>
 
-          <p className="text-5xl font-bold mt-4">
-            ₹149
-          </p>
+          <p className="text-5xl font-bold mt-4">₹149</p>
 
           <p className="text-gray-500 mt-2">per document</p>
 
@@ -180,7 +198,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FINAL CTA */}
+      {/* CTA */}
       <section className="mt-32 mb-20 px-6 text-center">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-3xl p-12 shadow-xl">
           
