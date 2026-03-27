@@ -244,7 +244,7 @@ export default function GeneratePage() {
                     onClick={handlePayment}
                     className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-lg"
                   >
-                    Unlock for ₹149
+                    Unlock for ₹9
                   </button>
                 </div>
               )}
