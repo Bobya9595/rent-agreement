@@ -1,173 +1,158 @@
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white text-gray-900">
+    <main className="min-h-screen bg-white text-gray-900 overflow-hidden">
 
       {/* NAVBAR */}
-      <nav className="flex justify-between items-center px-8 py-5 backdrop-blur bg-white/70 sticky top-0 z-50 border-b">
-        <h1 className="text-xl font-bold text-blue-700">
+      <nav className="flex justify-between items-center px-10 py-6 bg-white/70 backdrop-blur-xl sticky top-0 z-50 border-b">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
           LegalFormat
         </h1>
 
-        <div className="flex items-center gap-6">
-          <a href="#features" className="text-gray-600 hover:text-black">
-            Features
-          </a>
-
-          <a href="/generate" className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow">
-            Get Started
-          </a>
-        </div>
+        <a
+          href="/generate"
+          className="px-5 py-2 bg-black text-white rounded-xl hover:scale-105 transition"
+        >
+          Get Started
+        </a>
       </nav>
 
       {/* HERO */}
-      <section className="text-center px-6 mt-24">
-        <h1 className="text-5xl font-bold max-w-3xl mx-auto leading-tight">
-          Create Legal Policies for Your Website in Minutes
+      <section className="relative px-6 mt-24 text-center">
+
+        {/* Background Glow */}
+        <div className="absolute inset-0 -z-10 flex justify-center">
+          <div className="w-[500px] h-[500px] bg-blue-500/20 blur-3xl rounded-full"></div>
+        </div>
+
+        <h1 className="text-6xl font-bold max-w-4xl mx-auto leading-tight">
+          Generate Legal Policies
+          <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            in Seconds with AI
+          </span>
         </h1>
 
         <p className="mt-6 text-lg text-gray-600 max-w-xl mx-auto">
-          AI-powered legal documents tailored for Indian startups,
-          freelancers, and businesses.
+          Built for Indian startups, freelancers, and businesses.
+          No legal knowledge required.
         </p>
 
         <div className="mt-8 flex justify-center gap-4">
           <a
             href="/generate"
-            className="px-6 py-3 bg-orange-500 text-white rounded-xl text-lg shadow hover:scale-105 transition"
+            className="px-7 py-3 bg-blue-600 text-white rounded-2xl shadow-lg hover:scale-105 transition"
           >
             🚀 Start Free
           </a>
 
-          <button className="px-6 py-3 border rounded-xl text-lg hover:bg-gray-100 transition">
-            View Sample
+          <button className="px-7 py-3 border rounded-2xl hover:bg-gray-100 transition">
+            Live Demo
           </button>
         </div>
 
-        {/* TRUST BADGE */}
-        <p className="mt-6 text-sm text-gray-400">
-          No signup required • Takes 30 seconds
+        <p className="mt-4 text-sm text-gray-400">
+          Takes 30 seconds • No signup required
         </p>
       </section>
 
-      {/* SOCIAL PROOF */}
-      <section className="mt-16 text-center">
-        <p className="text-gray-500 text-sm">
-          Trusted by founders, freelancers & agencies
-        </p>
+      {/* HERO MOCK CARD */}
+      <section className="mt-20 flex justify-center px-6">
+        <div className="bg-white border shadow-2xl rounded-3xl p-6 w-full max-w-4xl backdrop-blur-lg">
 
-        <div className="flex justify-center gap-10 mt-4 text-gray-400 text-sm">
-          <span>Startup Owners</span>
-          <span>Freelancers</span>
-          <span>Agencies</span>
-          <span>E-commerce</span>
+          <div className="flex justify-between mb-4 text-sm text-gray-500">
+            <span>Privacy Policy Preview</span>
+            <span>AI Generated</span>
+          </div>
+
+          <div className="h-[200px] bg-gradient-to-b from-gray-100 to-white rounded-xl flex items-center justify-center text-gray-400">
+            Document Preview UI
+          </div>
+
         </div>
       </section>
 
       {/* FEATURES */}
-      <section id="features" className="mt-24 px-10 grid md:grid-cols-3 gap-8">
-        
-        <div className="card p-8">
-          <h3 className="text-xl font-semibold">⚡ Instant Generation</h3>
+      <section className="mt-32 px-10 grid md:grid-cols-3 gap-10">
+
+        <div className="p-8 rounded-3xl bg-gradient-to-b from-white to-gray-50 border shadow hover:shadow-xl transition">
+          <h3 className="text-xl font-semibold">⚡ Instant AI Generation</h3>
           <p className="mt-3 text-gray-600">
-            Generate legal policies in seconds using advanced AI.
+            Generate policies in seconds with AI automation.
           </p>
         </div>
 
-        <div className="card p-8">
-          <h3 className="text-xl font-semibold">🇮🇳 India-Compliant</h3>
+        <div className="p-8 rounded-3xl bg-gradient-to-b from-white to-gray-50 border shadow hover:shadow-xl transition">
+          <h3 className="text-xl font-semibold">🇮🇳 Built for India</h3>
           <p className="mt-3 text-gray-600">
-            Built specifically for Indian legal frameworks.
+            Designed for Indian compliance and businesses.
           </p>
         </div>
 
-        <div className="card p-8">
+        <div className="p-8 rounded-3xl bg-gradient-to-b from-white to-gray-50 border shadow hover:shadow-xl transition">
           <h3 className="text-xl font-semibold">🔒 Secure & Private</h3>
           <p className="mt-3 text-gray-600">
-            Your data is encrypted and never stored.
+            Your data is safe and never stored.
           </p>
         </div>
 
       </section>
 
-      {/* HOW IT WORKS */}
-      <section className="mt-28 px-6 text-center">
-        <h2 className="text-3xl font-bold">
-          How It Works
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-10 mt-10 max-w-4xl mx-auto">
-          
-          <div className="card p-6">
-            <div className="text-3xl">📝</div>
-            <h3 className="font-semibold mt-3">Enter Details</h3>
-            <p className="text-gray-600 text-sm mt-2">
-              Fill your website details in seconds
-            </p>
+      {/* STATS (PREMIUM TOUCH) */}
+      <section className="mt-28 text-center">
+        <div className="flex justify-center gap-12 text-gray-700">
+          <div>
+            <p className="text-3xl font-bold">10K+</p>
+            <p className="text-sm text-gray-500">Policies Generated</p>
           </div>
 
-          <div className="card p-6">
-            <div className="text-3xl">🤖</div>
-            <h3 className="font-semibold mt-3">AI Generates</h3>
-            <p className="text-gray-600 text-sm mt-2">
-              AI creates structured legal document
-            </p>
+          <div>
+            <p className="text-3xl font-bold">500+</p>
+            <p className="text-sm text-gray-500">Active Users</p>
           </div>
 
-          <div className="card p-6">
-            <div className="text-3xl">📄</div>
-            <h3 className="font-semibold mt-3">Download</h3>
-            <p className="text-gray-600 text-sm mt-2">
-              Pay once and download instantly
-            </p>
+          <div>
+            <p className="text-3xl font-bold">2 min</p>
+            <p className="text-sm text-gray-500">Avg Time</p>
           </div>
-
         </div>
       </section>
 
-      {/* PRICING SECTION (CONVERSION BOOST) */}
-      <section className="mt-28 px-6 text-center">
-        <h2 className="text-3xl font-bold">
-          Simple Pricing
-        </h2>
+      {/* PRICING */}
+      <section className="mt-28 flex justify-center px-6">
+        <div className="bg-white border shadow-2xl rounded-3xl p-10 max-w-md w-full text-center">
 
-        <div className="mt-10 flex justify-center">
-          <div className="bg-white p-10 rounded-2xl shadow-lg border max-w-sm w-full">
-            
-            <h3 className="text-xl font-semibold">
-              Pay Per Document
-            </h3>
+          <h3 className="text-xl font-semibold">Simple Pricing</h3>
 
-            <p className="text-4xl font-bold mt-4">
-              ₹149
-            </p>
+          <p className="text-5xl font-bold mt-4">
+            ₹149
+          </p>
 
-            <ul className="mt-6 text-sm text-gray-600 space-y-2">
-              <li>✔ Full legal document</li>
-              <li>✔ Instant download</li>
-              <li>✔ Lifetime access</li>
-            </ul>
+          <p className="text-gray-500 mt-2">per document</p>
 
-            <a
-              href="/generate"
-              className="mt-6 inline-block w-full bg-blue-600 text-white py-3 rounded-xl"
-            >
-              Get Started
-            </a>
+          <ul className="mt-6 text-gray-600 space-y-2 text-sm">
+            <li>✔ Full policy</li>
+            <li>✔ Instant download</li>
+            <li>✔ Lifetime access</li>
+          </ul>
 
-          </div>
+          <a
+            href="/generate"
+            className="mt-6 block bg-blue-600 text-white py-3 rounded-xl hover:scale-105 transition"
+          >
+            Get Started
+          </a>
         </div>
       </section>
 
       {/* FINAL CTA */}
-      <section className="mt-28 mb-20 px-6">
-        <div className="bg-blue-600 text-white rounded-3xl p-10 text-center shadow-xl">
+      <section className="mt-32 mb-20 px-6 text-center">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-3xl p-12 shadow-xl">
           
           <h2 className="text-3xl font-bold">
-            Ready to Create Your Policy?
+            Start Generating Your Policy Today
           </h2>
 
           <p className="mt-3 text-blue-100">
-            Start free. Pay only when you download.
+            No signup. No complexity. Just results.
           </p>
 
           <a
@@ -181,8 +166,8 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="text-center text-gray-400 text-sm pb-10">
-        © 2026 LegalFormat. All rights reserved.
+      <footer className="text-center text-gray-400 pb-10 text-sm">
+        © 2026 LegalFormat
       </footer>
 
     </main>
