@@ -9,7 +9,6 @@ export default function GeneratePage() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [paid, setPaid] = useState(false);
 
-  // 🔥 Generate Policy
   const handleGenerate = async () => {
     if (!website) return alert("Enter website name");
 
@@ -30,18 +29,21 @@ export default function GeneratePage() {
       const data = await res.json();
       setPolicy(data.policy);
 
-      setTimeout(() => {
-        setShowPaywall(true);
-      }, 1000);
-    } catch (err) {
+      setTimeout(() => setShowPaywall(true), 1000);
+    } catch {
       alert("Error generating policy");
     }
 
     setLoading(false);
   };
 
-  // 💳 Payment
+  // 💳 FIXED PAYMENT FUNCTION
   const handlePayment = async () => {
+    if (!(window as any).Razorpay) {
+      alert("Payment system not loaded. Refresh page.");
+      return;
+    }
+
     const res = await fetch("/api/create-order", {
       method: "POST",
     });
@@ -71,7 +73,6 @@ export default function GeneratePage() {
     rzp.open();
   };
 
-  // 📄 Download
   const handleDownload = () => {
     const blob = new Blob([policy], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -91,7 +92,7 @@ export default function GeneratePage() {
           LegalFormat
         </h1>
 
-        <a href="/" className="text-sm text-gray-500 hover:text-black">
+        <a href="/" className="text-sm text-gray-500">
           ← Back
         </a>
       </div>
@@ -104,13 +105,9 @@ export default function GeneratePage() {
             Generate Privacy Policy
           </h2>
 
-          <p className="text-sm text-gray-500 mb-6">
-            Takes less than 30 seconds ⚡
-          </p>
-
           <input
             type="text"
-            placeholder="Enter your website name"
+            placeholder="Enter website name"
             className="w-full border p-3 rounded-xl"
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
@@ -118,7 +115,7 @@ export default function GeneratePage() {
 
           <button
             onClick={handleGenerate}
-            className="mt-6 w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition"
+            className="mt-6 w-full bg-blue-600 text-white py-3 rounded-xl"
           >
             {loading ? "Generating..." : "Generate Policy"}
           </button>
@@ -131,7 +128,7 @@ export default function GeneratePage() {
           </h2>
 
           {!policy && (
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-400">
               Your policy will appear here...
             </p>
           )}
@@ -143,22 +140,18 @@ export default function GeneratePage() {
                 {policy}
               </pre>
 
-              {/* 🔒 PAYWALL */}
+              {/* PAYWALL */}
               {showPaywall && !paid && (
-                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-white via-white/90 to-transparent flex items-end justify-center">
+                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-white to-transparent flex items-end justify-center">
 
                   <div className="bg-white p-5 rounded-xl shadow-xl text-center mb-4 border">
                     <p className="font-semibold text-lg">
                       🔒 Unlock Full Policy
                     </p>
 
-                    <p className="text-sm text-gray-600 mt-1">
-                      Pay once and download
-                    </p>
-
                     <button
                       onClick={handlePayment}
-                      className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
+                      className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-lg"
                     >
                       Pay ₹149
                     </button>
@@ -169,11 +162,11 @@ export default function GeneratePage() {
             </div>
           )}
 
-          {/* 📥 DOWNLOAD BUTTON */}
+          {/* DOWNLOAD */}
           {paid && (
             <button
               onClick={handleDownload}
-              className="mt-6 w-full bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition"
+              className="mt-6 w-full bg-green-600 text-white py-3 rounded-xl"
             >
               Download Policy
             </button>
