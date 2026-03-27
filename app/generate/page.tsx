@@ -15,7 +15,7 @@ export default function GeneratePage() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [paid, setPaid] = useState(false);
 
-  // 🔥 Generate
+  // Generate
   const handleGenerate = async () => {
     if (!website) return alert("Enter website name");
 
@@ -29,11 +29,7 @@ export default function GeneratePage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        website,
-        businessType,
-        country,
-      }),
+      body: JSON.stringify({ website, businessType, country }),
     });
 
     const data = await res.json();
@@ -43,7 +39,7 @@ export default function GeneratePage() {
     setLoading(false);
   };
 
-  // 💳 Payment
+  // Payment
   const handlePayment = async () => {
     if (!(window as any).Razorpay) {
       alert("Refresh page");
@@ -63,7 +59,6 @@ export default function GeneratePage() {
       name: "LegalFormat",
       description: "Policy Download",
       order_id: order.id,
-
       handler: function () {
         setShowPaywall(false);
         setPaid(true);
@@ -74,11 +69,10 @@ export default function GeneratePage() {
     rzp.open();
   };
 
-  // 📄 Premium PDF
+  // Premium PDF
   const handlePDFDownload = () => {
     const doc = new jsPDF();
 
-    // Header
     doc.setFillColor(37, 99, 235);
     doc.rect(0, 0, 210, 25, "F");
 
@@ -97,7 +91,7 @@ export default function GeneratePage() {
     doc.save("LegalFormat-Policy.pdf");
   };
 
-  // 📄 Premium Word
+  // Word
   const handleWordDownload = async () => {
     const doc = new Document({
       sections: [
@@ -107,12 +101,7 @@ export default function GeneratePage() {
               text: "Privacy Policy",
               heading: "Heading1",
             }),
-            ...policy.split("\n").map(
-              (line) =>
-                new Paragraph({
-                  text: line,
-                })
-            ),
+            ...policy.split("\n").map((line) => new Paragraph({ text: line })),
           ],
         },
       ],
@@ -123,38 +112,42 @@ export default function GeneratePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-950 to-black text-white p-6 md:p-12">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-6 md:p-12">
 
       {/* HEADER */}
       <div className="flex justify-between items-center mb-12">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
           LegalFormat
         </h1>
 
-        <a href="/" className="text-sm text-gray-400 hover:text-white">
+        <a href="/" className="text-sm text-gray-500 hover:text-black">
           ← Back
         </a>
       </div>
 
       <div className="grid md:grid-cols-2 gap-10">
 
-        {/* LEFT PANEL */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl">
+        {/* LEFT CARD */}
+        <div className="bg-white p-8 rounded-3xl shadow-xl border">
 
           <h2 className="text-xl font-semibold mb-4">
             Generate Privacy Policy
           </h2>
 
+          <p className="text-sm text-gray-500 mb-6">
+            Takes less than 30 seconds ⚡
+          </p>
+
           <input
             type="text"
             placeholder="Website Name"
-            className="w-full bg-white/10 border border-white/20 p-3 rounded-xl mb-3"
+            className="w-full border p-3 rounded-xl mb-3 focus:ring-2 focus:ring-blue-500"
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
           />
 
           <select
-            className="w-full bg-white/10 p-3 rounded-xl mb-3"
+            className="w-full border p-3 rounded-xl mb-3"
             value={businessType}
             onChange={(e) => setBusinessType(e.target.value)}
           >
@@ -164,7 +157,7 @@ export default function GeneratePage() {
           </select>
 
           <select
-            className="w-full bg-white/10 p-3 rounded-xl mb-3"
+            className="w-full border p-3 rounded-xl mb-3"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
           >
@@ -174,15 +167,14 @@ export default function GeneratePage() {
 
           <button
             onClick={handleGenerate}
-            className="mt-4 w-full bg-gradient-to-r from-blue-500 to-indigo-600 py-3 rounded-xl font-semibold hover:scale-105 transition"
+            className="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-semibold hover:scale-105 transition"
           >
             {loading ? "Generating..." : "Generate Policy"}
           </button>
-
         </div>
 
-        {/* RIGHT PANEL */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl relative">
+        {/* RIGHT CARD */}
+        <div className="bg-white p-8 rounded-3xl shadow-xl border relative">
 
           <h2 className="text-xl font-semibold mb-4">
             Live Preview
@@ -197,17 +189,21 @@ export default function GeneratePage() {
           {policy && (
             <div className="relative max-h-[500px] overflow-hidden">
 
-              <div className="text-sm text-gray-200 whitespace-pre-wrap leading-relaxed">
+              <div className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">
                 {policy}
               </div>
 
               {/* PAYWALL */}
               {showPaywall && !paid && (
-                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent flex items-end justify-center">
+                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-white via-white/90 to-transparent flex items-end justify-center">
 
-                  <div className="bg-white text-black p-6 rounded-2xl shadow-xl text-center">
+                  <div className="bg-white p-6 rounded-2xl shadow-xl text-center border">
                     <p className="font-semibold text-lg">
                       🔒 Unlock Full Policy
+                    </p>
+
+                    <p className="text-sm text-gray-500 mt-1">
+                      Pay once & download
                     </p>
 
                     <button
@@ -228,14 +224,14 @@ export default function GeneratePage() {
             <div className="mt-6 flex gap-4">
               <button
                 onClick={handlePDFDownload}
-                className="w-full bg-green-500 py-3 rounded-xl font-semibold"
+                className="w-full bg-green-600 text-white py-3 rounded-xl"
               >
                 Download PDF
               </button>
 
               <button
                 onClick={handleWordDownload}
-                className="w-full bg-blue-500 py-3 rounded-xl font-semibold"
+                className="w-full bg-blue-600 text-white py-3 rounded-xl"
               >
                 Download Word
               </button>
