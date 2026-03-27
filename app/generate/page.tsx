@@ -1,80 +1,91 @@
-const handlePDFDownload = () => {
-  const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
+"use client";
 
-  let y = 45;
-  let pageNumber = 1;
+import { useState } from "react";
+import jsPDF from "jspdf";
+import { saveAs } from "file-saver";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  HeadingLevel,
+  AlignmentType,
+} from "docx";
 
-  // 🔷 Function to draw header
-  const drawHeader = () => {
-    doc.setFillColor(0, 0, 0);
-    doc.rect(0, 0, pageWidth, 20, "F");
+export default function GeneratePage() {
+  const [website, setWebsite] = useState("");
+  const [policy, setPolicy] = useState("");
 
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(12);
-    doc.text("LegalFormat", 10, 13);
+  // CLEAN
+  const formattedPolicy = policy
+    .replace(/\*\*/g, "")
+    .replace(/#/g, "");
+
+  // GENERATE
+  const handleGenerate = async () => {
+    const res = await fetch("/api/generate-policy", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ website }),
+    });
+
+    const data = await res.json();
+    setPolicy(data.policy);
   };
 
-  // 🔷 Function to draw footer
-  const drawFooter = () => {
-    doc.setFontSize(10);
-    doc.setTextColor(150);
-    doc.text(
-      `Page ${pageNumber}`,
-      pageWidth - 20,
-      pageHeight - 10
-    );
+  // PDF
+  const handlePDFDownload = () => {
+    const doc = new jsPDF();
+    const width = doc.internal.pageSize.getWidth();
+
+    doc.text(`Privacy Policy for ${website}`, 10, 20);
+
+    const lines = doc.splitTextToSize(formattedPolicy, 180);
+    doc.text(lines, 10, 30);
+
+    doc.save(`${website}.pdf`);
   };
 
-  // 🔷 First Page Header
-  drawHeader();
+  // WORD
+  const handleWordDownload = async () => {
+    const doc = new Document({
+      sections: [
+        {
+          children: [
+            new Paragraph({
+              text: `Privacy Policy for ${website}`,
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+            }),
+            ...formattedPolicy.split("\n").map(
+              (line) => new Paragraph({ text: line })
+            ),
+          ],
+        },
+      ],
+    });
 
-  // 🔷 Title
-  doc.setTextColor(0, 0, 0);
-  doc.setFont("Times", "Bold");
-  doc.setFontSize(18);
-  doc.text(`Privacy Policy for ${website}`, pageWidth / 2, 30, {
-    align: "center",
-  });
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `${website}.docx`);
+  };
 
-  // 🔷 Subline
-  doc.setFont("Times", "Normal");
-  doc.setFontSize(10);
-  doc.text(
-    `This document is customized for ${website}`,
-    pageWidth / 2,
-    36,
-    { align: "center" }
+  return (
+    <div style={{ padding: 20 }}>
+      <h1>LegalFormat</h1>
+
+      <input
+        placeholder="Website"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+      />
+
+      <button onClick={handleGenerate}>Generate</button>
+
+      <pre>{formattedPolicy}</pre>
+
+      <button onClick={handlePDFDownload}>PDF</button>
+      <button onClick={handleWordDownload}>Word</button>
+    </div>
   );
-
-  // 🔷 Content
-  formattedPolicy.split("\n").forEach((line) => {
-    if (y > pageHeight - 20) {
-      drawFooter();
-      doc.addPage();
-      pageNumber++;
-
-      drawHeader();
-      y = 25;
-    }
-
-    if (/^\d+\./.test(line)) {
-      doc.setFont("Times", "Bold");
-      doc.setFontSize(13);
-      y += 4;
-    } else {
-      doc.setFont("Times", "Normal");
-      doc.setFontSize(11);
-    }
-
-    const split = doc.splitTextToSize(line, 180);
-    doc.text(split, 15, y);
-    y += split.length * 6;
-  });
-
-  // 🔷 Final Footer
-  drawFooter();
-
-  doc.save(`${website}-privacy-policy.pdf`);
-};
+}
