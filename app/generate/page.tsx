@@ -1,211 +1,118 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import jsPDF from "jspdf";
 
 export default function GeneratePage() {
-  const [docType, setDocType] = useState("Rent Agreement");
-  const [partyOne, setPartyOne] = useState("");
-  const [partyTwo, setPartyTwo] = useState("");
-  const [details, setDetails] = useState("");
+  const [website, setWebsite] = useState("");
   const [loading, setLoading] = useState(false);
-  const [generatedDoc, setGeneratedDoc] = useState<string | null>(null);
+  const [policy, setPolicy] = useState("");
+  const [showPaywall, setShowPaywall] = useState(false);
 
-  const handleGenerate = () => {
-    if (!partyOne || !partyTwo) {
-      return alert("Please fill required fields");
-    }
+  const handleGenerate = async () => {
+    if (!website) return alert("Enter website name");
 
     setLoading(true);
-    setGeneratedDoc(null);
+    setPolicy("");
 
-    setTimeout(() => {
-      setGeneratedDoc(`
-${docType.toUpperCase()}
+    try {
+      const res = await fetch("/api/generate-policy", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ website }),
+      });
 
-This agreement is made between ${partyOne} and ${partyTwo}.
+      const data = await res.json();
 
-${details || "Standard terms and conditions apply."}
+      setPolicy(data.policy);
 
-1. TERM
-The agreement shall remain valid as mutually agreed between the parties.
+      // Trigger paywall after generation
+      setTimeout(() => {
+        setShowPaywall(true);
+      }, 1000);
+    } catch (err) {
+      alert("Error generating policy");
+    }
 
-2. OBLIGATIONS
-Both parties agree to comply with the terms stated herein.
-
-3. GOVERNING LAW
-This agreement shall be governed by the laws of India.
-
-IN WITNESS WHEREOF, the parties have signed this agreement.
-      `);
-      setLoading(false);
-    }, 1500);
-  };
-
-  const handleDownloadPDF = () => {
-    if (!generatedDoc) return;
-
-    const doc = new jsPDF("p", "mm", "a4");
-
-    const marginLeft = 20;
-    let yPosition = 30;
-
-    // Title
-    doc.setFont("Times", "Bold");
-    doc.setFontSize(16);
-    doc.text(docType.toUpperCase(), 105, 20, { align: "center" });
-
-    // Body
-    doc.setFont("Times", "Normal");
-    doc.setFontSize(12);
-
-    const bodyText = `
-This agreement is made between ${partyOne} and ${partyTwo}.
-
-${details || "Standard terms and conditions apply."}
-
-1. TERM
-The agreement shall remain valid as mutually agreed between the parties.
-
-2. OBLIGATIONS
-Both parties agree to comply with the terms stated herein.
-
-3. GOVERNING LAW
-This agreement shall be governed by the laws of India.
-
-IN WITNESS WHEREOF, the parties have signed this agreement.
-    `;
-
-    const lines = doc.splitTextToSize(bodyText, 170);
-
-    lines.forEach((line: string) => {
-      if (yPosition > 260) {
-        doc.addPage();
-        yPosition = 20;
-      }
-
-      doc.text(line, marginLeft, yPosition);
-      yPosition += 7;
-    });
-
-    // Signature Section
-    yPosition += 20;
-
-    doc.text("__________________________", marginLeft, yPosition);
-    doc.text("Signature of Party 1", marginLeft, yPosition + 6);
-
-    doc.text("__________________________", 110, yPosition);
-    doc.text("Signature of Party 2", 110, yPosition + 6);
-
-    doc.save("LegalFormat-Document.pdf");
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0c12] text-white p-10">
-
-      {/* Back Button */}
-      <Link
-        href="/dashboard"
-        className="text-sm text-gray-400 hover:text-white mb-6 inline-block"
-      >
-        ← Back to Dashboard
-      </Link>
-
-      <h1 className="text-3xl font-bold mb-8">
-        AI Document Generator
+    <div className="min-h-screen bg-gray-50 p-6 md:p-10">
+      
+      {/* HEADER */}
+      <h1 className="text-2xl font-bold mb-6">
+        Privacy Policy Generator
       </h1>
 
-      <div className="grid md:grid-cols-2 gap-10">
-
-        {/* Form Section */}
-        <div className="bg-[#16161d] p-8 rounded-2xl border border-gray-800 space-y-6">
-
-          <div>
-            <label className="block text-sm text-gray-400 mb-2">
-              Document Type
-            </label>
-            <select
-              value={docType}
-              onChange={(e) => setDocType(e.target.value)}
-              className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-purple-500"
-            >
-              <option>Rent Agreement</option>
-              <option>Offer Letter</option>
-              <option>NDA</option>
-              <option>Service Agreement</option>
-            </select>
-          </div>
+      <div className="grid md:grid-cols-2 gap-8">
+        
+        {/* LEFT: FORM */}
+        <div className="bg-white p-6 rounded-xl shadow-sm">
+          <h2 className="text-lg font-semibold mb-4">
+            Enter Details
+          </h2>
 
           <input
-            value={partyOne}
-            onChange={(e) => setPartyOne(e.target.value)}
-            className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-purple-500"
-            placeholder="Party 1"
-          />
-
-          <input
-            value={partyTwo}
-            onChange={(e) => setPartyTwo(e.target.value)}
-            className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-purple-500"
-            placeholder="Party 2"
-          />
-
-          <textarea
-            value={details}
-            onChange={(e) => setDetails(e.target.value)}
-            className="w-full bg-[#1a1a23] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-purple-500"
-            rows={4}
-            placeholder="Additional details..."
+            type="text"
+            placeholder="Website Name (e.g. mysite.com)"
+            className="w-full border p-3 rounded-lg"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
           />
 
           <button
             onClick={handleGenerate}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 py-3 rounded-xl hover:scale-105 transition"
+            className="mt-4 w-full bg-blue-600 text-white py-3 rounded-lg"
           >
-            {loading ? "Generating..." : "Generate with AI"}
+            {loading ? "Generating..." : "Generate Policy"}
           </button>
-
         </div>
 
-        {/* Result Section */}
-        <div className="bg-[#16161d] p-8 rounded-2xl border border-gray-800">
-
+        {/* RIGHT: PREVIEW */}
+        <div className="bg-white p-6 rounded-xl shadow-sm relative">
           <h2 className="text-lg font-semibold mb-4">
-            Generated Document
+            Preview
           </h2>
 
-          {loading && (
-            <p className="text-purple-400">
-              AI is drafting your document...
+          {!policy && (
+            <p className="text-gray-500">
+              Your generated policy will appear here...
             </p>
           )}
 
-          {!loading && generatedDoc && (
-            <div className="space-y-6">
-
-              <pre className="whitespace-pre-wrap text-sm text-gray-300 bg-[#1a1a23] p-4 rounded-xl">
-                {generatedDoc}
+          {policy && (
+            <div className="relative max-h-[500px] overflow-hidden">
+              
+              {/* TEXT */}
+              <pre className="whitespace-pre-wrap text-sm text-gray-800">
+                {policy}
               </pre>
 
-              <button
-                onClick={handleDownloadPDF}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-3 rounded-xl hover:scale-105 transition"
-              >
-                Download PDF
-              </button>
+              {/* BLUR PAYWALL */}
+              {showPaywall && (
+                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-white via-white/80 to-transparent flex items-end justify-center">
+                  
+                  <div className="bg-white p-4 rounded-lg shadow-md text-center mb-4">
+                    <p className="font-semibold">
+                      🔒 Unlock Full Policy
+                    </p>
 
+                    <p className="text-sm text-gray-600 mt-1">
+                      Download complete document
+                    </p>
+
+                    <button className="mt-3 px-4 py-2 bg-orange-500 text-white rounded-lg">
+                      Pay ₹149
+                    </button>
+                  </div>
+
+                </div>
+              )}
             </div>
           )}
-
-          {!loading && !generatedDoc && (
-            <p className="text-gray-500">
-              Fill the form and generate document.
-            </p>
-          )}
-
         </div>
-
       </div>
     </div>
   );
