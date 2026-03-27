@@ -1,9 +1,5 @@
 import "./globals.css";
-
-export const metadata = {
-  title: "LegalFormat",
-  description: "AI Legal Intelligence for Indian Agreements"
-};
+import Script from "next/script";
 
 export default function RootLayout({
   children,
@@ -14,6 +10,12 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
+
+        {/* ✅ Razorpay Script (CORRECT WAY) */}
+        <Script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
