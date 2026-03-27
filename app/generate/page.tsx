@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import jsPDF from "jspdf";
+import { saveAs } from "file-saver";
+import { Document, Packer, Paragraph } from "docx";
 
 export default function GeneratePage() {
   const [website, setWebsite] = useState("");
@@ -9,6 +12,7 @@ export default function GeneratePage() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [paid, setPaid] = useState(false);
 
+  // 🔥 Generate Policy
   const handleGenerate = async () => {
     if (!website) return alert("Enter website name");
 
@@ -37,10 +41,10 @@ export default function GeneratePage() {
     setLoading(false);
   };
 
-  // 💳 FIXED PAYMENT FUNCTION
+  // 💳 Payment with verification
   const handlePayment = async () => {
     if (!(window as any).Razorpay) {
-      alert("Payment system not loaded. Refresh page.");
+      alert("Payment system not loaded. Refresh.");
       return;
     }
 
@@ -58,10 +62,24 @@ export default function GeneratePage() {
       description: "Download Policy",
       order_id: order.id,
 
-      handler: function () {
-        alert("Payment Successful 🎉");
-        setShowPaywall(false);
-        setPaid(true);
+      handler: async function (response: any) {
+        const verifyRes = await fetch("/api/verify-payment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(response),
+        });
+
+        const data = await verifyRes.json();
+
+        if (data.success) {
+          alert("Payment Verified ✅");
+          setShowPaywall(false);
+          setPaid(true);
+        } else {
+          alert("Payment Verification Failed ❌");
+        }
       },
 
       theme: {
@@ -73,14 +91,37 @@ export default function GeneratePage() {
     rzp.open();
   };
 
-  const handleDownload = () => {
-    const blob = new Blob([policy], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
+  // 📄 PDF Download
+  const handlePDFDownload = () => {
+    const doc = new jsPDF();
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "privacy-policy.txt";
-    a.click();
+    doc.setFont("Times", "Bold");
+    doc.setFontSize(18);
+    doc.text("Privacy Policy", 10, 15);
+
+    doc.setFont("Times", "Normal");
+    doc.setFontSize(12);
+
+    const lines = doc.splitTextToSize(policy, 180);
+    doc.text(lines, 10, 30);
+
+    doc.save("LegalFormat-Policy.pdf");
+  };
+
+  // 📄 WORD Download
+  const handleWordDownload = async () => {
+    const doc = new Document({
+      sections: [
+        {
+          children: policy
+            .split("\n")
+            .map((line) => new Paragraph(line)),
+        },
+      ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, "LegalFormat-Policy.docx");
   };
 
   return (
@@ -140,7 +181,7 @@ export default function GeneratePage() {
                 {policy}
               </pre>
 
-              {/* PAYWALL */}
+              {/* 🔒 PAYWALL */}
               {showPaywall && !paid && (
                 <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-white to-transparent flex items-end justify-center">
 
@@ -162,14 +203,23 @@ export default function GeneratePage() {
             </div>
           )}
 
-          {/* DOWNLOAD */}
+          {/* DOWNLOAD OPTIONS */}
           {paid && (
-            <button
-              onClick={handleDownload}
-              className="mt-6 w-full bg-green-600 text-white py-3 rounded-xl"
-            >
-              Download Policy
-            </button>
+            <div className="mt-6 flex gap-4">
+              <button
+                onClick={handlePDFDownload}
+                className="w-full bg-green-600 text-white py-3 rounded-xl"
+              >
+                Download PDF
+              </button>
+
+              <button
+                onClick={handleWordDownload}
+                className="w-full bg-blue-600 text-white py-3 rounded-xl"
+              >
+                Download Word
+              </button>
+            </div>
           )}
 
         </div>
