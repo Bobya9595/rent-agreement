@@ -17,14 +17,14 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section className="relative px-6 mt-24 text-center">
+      <section className="relative px-6 mt-20 text-center">
 
-        {/* Background Glow */}
+        {/* GLOW BACKGROUND */}
         <div className="absolute inset-0 -z-10 flex justify-center">
-          <div className="w-[500px] h-[500px] bg-blue-500/20 blur-3xl rounded-full"></div>
+          <div className="w-[600px] h-[600px] bg-blue-500/20 blur-3xl rounded-full"></div>
         </div>
 
-        <h1 className="text-6xl font-bold max-w-4xl mx-auto leading-tight">
+        <h1 className="text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
           Generate Legal Policies
           <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
             in Seconds with AI
@@ -54,16 +54,16 @@ export default function Home() {
         </p>
       </section>
 
-      {/* HERO MOCK CARD */}
-      <section className="mt-20 flex justify-center px-6">
-        <div className="bg-white border shadow-2xl rounded-3xl p-6 w-full max-w-4xl backdrop-blur-lg">
+      {/* HERO CARD (IMPORTANT FIX FOR BLANK LOOK) */}
+      <section className="mt-16 flex justify-center px-6">
+        <div className="bg-white border shadow-2xl rounded-3xl p-6 w-full max-w-4xl">
 
-          <div className="flex justify-between mb-4 text-sm text-gray-500">
+          <div className="flex justify-between text-sm text-gray-500 mb-4">
             <span>Privacy Policy Preview</span>
             <span>AI Generated</span>
           </div>
 
-          <div className="h-[200px] bg-gradient-to-b from-gray-100 to-white rounded-xl flex items-center justify-center text-gray-400">
+          <div className="h-[220px] bg-gradient-to-b from-gray-100 to-white rounded-xl flex items-center justify-center text-gray-400">
             Document Preview UI
           </div>
 
@@ -71,12 +71,12 @@ export default function Home() {
       </section>
 
       {/* FEATURES */}
-      <section className="mt-32 px-10 grid md:grid-cols-3 gap-10">
+      <section className="mt-28 px-10 grid md:grid-cols-3 gap-10">
 
         <div className="p-8 rounded-3xl bg-gradient-to-b from-white to-gray-50 border shadow hover:shadow-xl transition">
           <h3 className="text-xl font-semibold">⚡ Instant AI Generation</h3>
           <p className="mt-3 text-gray-600">
-            Generate policies in seconds with AI automation.
+            Generate policies in seconds using AI automation.
           </p>
         </div>
 
@@ -96,7 +96,7 @@ export default function Home() {
 
       </section>
 
-      {/* STATS (PREMIUM TOUCH) */}
+      {/* STATS */}
       <section className="mt-28 text-center">
         <div className="flex justify-center gap-12 text-gray-700">
           <div>
@@ -106,7 +106,7 @@ export default function Home() {
 
           <div>
             <p className="text-3xl font-bold">500+</p>
-            <p className="text-sm text-gray-500">Active Users</p>
+            <p className="text-sm text-gray-500">Users</p>
           </div>
 
           <div>
@@ -140,10 +140,11 @@ export default function Home() {
           >
             Get Started
           </a>
+
         </div>
       </section>
 
-      {/* FINAL CTA */}
+      {/* CTA */}
       <section className="mt-32 mb-20 px-6 text-center">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-3xl p-12 shadow-xl">
           
