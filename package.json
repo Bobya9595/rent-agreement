@@ -26,6 +26,8 @@
     "docx": "^8.5.0",
     "file-saver": "^2.0.5",
 
+    "@react-pdf/renderer": "^3.4.4",
+
     "firebase": "^10.12.2",
 
     "@upstash/redis": "^1.31.0",
