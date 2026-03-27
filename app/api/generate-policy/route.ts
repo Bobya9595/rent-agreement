@@ -1,67 +1,59 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
+});
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { website } = body;
+    const {
+      website,
+      businessType,
+      country,
+      collectsData,
+      usesCookies,
+      thirdParty,
+    } = await req.json();
 
-    // Validation
-    if (!website) {
-      return NextResponse.json(
-        { error: "Website name is required" },
-        { status: 400 }
-      );
-    }
-
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    // ✅ PRODUCTION PROMPT
     const prompt = `
-You are a professional legal expert specializing in Indian digital law.
-
-Generate a Privacy Policy for:
+Generate a professional Privacy Policy for:
 
 Website Name: ${website}
-Country: India
+Business Type: ${businessType}
+Country: ${country}
+Collects Personal Data: ${collectsData}
+Uses Cookies: ${usesCookies}
+Third-party Services: ${thirdParty}
 
 Requirements:
 - Use formal legal language
-- Structure with proper headings
+- Structure properly with headings
 - Include:
   1. Introduction
-  2. Information Collection
-  3. Use of Information
-  4. Cookies
-  5. Data Sharing
-  6. Security
+  2. Information We Collect
+  3. How We Use Information
+  4. Cookies Policy
+  5. Third-party Services
+  6. Data Security
   7. User Rights
-  8. Changes to Policy
-  9. Contact Information
+  8. Contact Information
 
-- Make it website-ready
-- Do not use placeholders
-- Keep it professional and clean
+- Make it detailed and ready to use
+- Do NOT be generic
 `;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4.1-mini",
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
     });
 
-    const policy =
-      response.choices?.[0]?.message?.content ||
-      "Unable to generate policy";
-
-    return NextResponse.json({ policy });
-  } catch (error: any) {
-    console.error("API ERROR:", error);
-
+    return NextResponse.json({
+      policy: response.choices[0].message.content,
+    });
+  } catch (error) {
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: "Error generating policy" },
       { status: 500 }
     );
   }
