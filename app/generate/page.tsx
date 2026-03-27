@@ -3,24 +3,14 @@
 import { useState } from "react";
 import jsPDF from "jspdf";
 import { saveAs } from "file-saver";
-import {
-  Document,
-  Packer,
-  Paragraph,
-  HeadingLevel,
-  AlignmentType,
-} from "docx";
+import { Document, Packer, Paragraph } from "docx";
 
 export default function GeneratePage() {
   const [website, setWebsite] = useState("");
   const [policy, setPolicy] = useState("");
 
-  // CLEAN
-  const formattedPolicy = policy
-    .replace(/\*\*/g, "")
-    .replace(/#/g, "");
+  const formattedPolicy = policy.replace(/\*\*/g, "").replace(/#/g, "");
 
-  // GENERATE
   const handleGenerate = async () => {
     const res = await fetch("/api/generate-policy", {
       method: "POST",
@@ -34,11 +24,8 @@ export default function GeneratePage() {
     setPolicy(data.policy);
   };
 
-  // PDF
   const handlePDFDownload = () => {
     const doc = new jsPDF();
-    const width = doc.internal.pageSize.getWidth();
-
     doc.text(`Privacy Policy for ${website}`, 10, 20);
 
     const lines = doc.splitTextToSize(formattedPolicy, 180);
@@ -47,17 +34,12 @@ export default function GeneratePage() {
     doc.save(`${website}.pdf`);
   };
 
-  // WORD
   const handleWordDownload = async () => {
     const doc = new Document({
       sections: [
         {
           children: [
-            new Paragraph({
-              text: `Privacy Policy for ${website}`,
-              heading: HeadingLevel.HEADING_1,
-              alignment: AlignmentType.CENTER,
-            }),
+            new Paragraph({ text: `Privacy Policy for ${website}` }),
             ...formattedPolicy.split("\n").map(
               (line) => new Paragraph({ text: line })
             ),
@@ -71,21 +53,65 @@ export default function GeneratePage() {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>LegalFormat</h1>
+    <div className="p-10 bg-gray-100 min-h-screen">
 
-      <input
-        placeholder="Website"
-        value={website}
-        onChange={(e) => setWebsite(e.target.value)}
-      />
+      <h1 className="text-3xl font-bold mb-6 text-blue-600">
+        LegalFormat
+      </h1>
 
-      <button onClick={handleGenerate}>Generate</button>
+      <div className="grid grid-cols-2 gap-8">
 
-      <pre>{formattedPolicy}</pre>
+        {/* LEFT */}
+        <div className="bg-white p-6 rounded-xl shadow">
+          <h2 className="text-xl font-semibold mb-4">
+            Generate Policy
+          </h2>
 
-      <button onClick={handlePDFDownload}>PDF</button>
-      <button onClick={handleWordDownload}>Word</button>
+          <input
+            placeholder="Website Name"
+            className="w-full border p-3 rounded mb-4"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+          />
+
+          <button
+            onClick={handleGenerate}
+            className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+          >
+            Generate
+          </button>
+        </div>
+
+        {/* RIGHT */}
+        <div className="bg-white p-6 rounded-xl shadow">
+          <h2 className="text-xl font-semibold mb-4">
+            Preview
+          </h2>
+
+          <div className="h-[300px] overflow-y-auto text-sm text-gray-700 whitespace-pre-wrap">
+            {formattedPolicy || "Preview will appear here..."}
+          </div>
+
+          {policy && (
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={handlePDFDownload}
+                className="bg-green-600 text-white px-4 py-2 rounded w-full"
+              >
+                PDF
+              </button>
+
+              <button
+                onClick={handleWordDownload}
+                className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+              >
+                Word
+              </button>
+            </div>
+          )}
+        </div>
+
+      </div>
     </div>
   );
 }
