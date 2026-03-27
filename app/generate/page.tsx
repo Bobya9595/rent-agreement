@@ -7,6 +7,12 @@ import { Document, Packer, Paragraph } from "docx";
 
 export default function GeneratePage() {
   const [website, setWebsite] = useState("");
+  const [businessType, setBusinessType] = useState("SaaS");
+  const [country, setCountry] = useState("India");
+  const [collectsData, setCollectsData] = useState("Yes");
+  const [usesCookies, setUsesCookies] = useState("Yes");
+  const [thirdParty, setThirdParty] = useState("Google Analytics");
+
   const [policy, setPolicy] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
@@ -27,7 +33,14 @@ export default function GeneratePage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ website }),
+        body: JSON.stringify({
+          website,
+          businessType,
+          country,
+          collectsData,
+          usesCookies,
+          thirdParty,
+        }),
       });
 
       const data = await res.json();
@@ -41,7 +54,7 @@ export default function GeneratePage() {
     setLoading(false);
   };
 
-  // 💳 Razorpay Payment (NO verification)
+  // 💳 Payment
   const handlePayment = async () => {
     if (!(window as any).Razorpay) {
       alert("Payment system not loaded. Refresh page.");
@@ -132,21 +145,69 @@ export default function GeneratePage() {
             Generate Privacy Policy
           </h2>
 
-          <p className="text-sm text-gray-500 mb-6">
-            Takes less than 30 seconds ⚡
+          <p className="text-sm text-gray-500 mb-4">
+            Fill details to generate a customized policy
           </p>
 
           <input
             type="text"
-            placeholder="Enter your website name"
-            className="w-full border p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Website Name"
+            className="w-full border p-3 rounded-xl"
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
           />
 
+          {/* NEW INPUTS */}
+          <select
+            className="w-full border p-3 rounded-xl mt-3"
+            value={businessType}
+            onChange={(e) => setBusinessType(e.target.value)}
+          >
+            <option>SaaS</option>
+            <option>E-commerce</option>
+            <option>Blog</option>
+            <option>Portfolio</option>
+          </select>
+
+          <select
+            className="w-full border p-3 rounded-xl mt-3"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+          >
+            <option>India</option>
+            <option>USA</option>
+            <option>Global</option>
+          </select>
+
+          <select
+            className="w-full border p-3 rounded-xl mt-3"
+            value={collectsData}
+            onChange={(e) => setCollectsData(e.target.value)}
+          >
+            <option>Collects Personal Data: Yes</option>
+            <option>Collects Personal Data: No</option>
+          </select>
+
+          <select
+            className="w-full border p-3 rounded-xl mt-3"
+            value={usesCookies}
+            onChange={(e) => setUsesCookies(e.target.value)}
+          >
+            <option>Uses Cookies: Yes</option>
+            <option>Uses Cookies: No</option>
+          </select>
+
+          <input
+            type="text"
+            placeholder="Third-party services (e.g. Google Analytics)"
+            className="w-full border p-3 rounded-xl mt-3"
+            value={thirdParty}
+            onChange={(e) => setThirdParty(e.target.value)}
+          />
+
           <button
             onClick={handleGenerate}
-            className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition"
+            className="mt-6 w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700"
           >
             {loading ? "Generating..." : "Generate Policy"}
           </button>
@@ -166,56 +227,48 @@ export default function GeneratePage() {
 
           {policy && (
             <div className="relative max-h-[500px] overflow-hidden">
-
-              <pre className="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed">
+              <pre className="whitespace-pre-wrap text-sm text-gray-800">
                 {policy}
               </pre>
 
-              {/* 🔒 PAYWALL */}
+              {/* PAYWALL */}
               {showPaywall && !paid && (
-                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-white via-white/90 to-transparent flex items-end justify-center">
-
+                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-white to-transparent flex items-end justify-center">
                   <div className="bg-white p-5 rounded-xl shadow-xl text-center mb-4 border">
                     <p className="font-semibold text-lg">
                       🔒 Unlock Full Policy
                     </p>
 
-                    <p className="text-sm text-gray-600 mt-1">
-                      Pay once and download
-                    </p>
-
                     <button
                       onClick={handlePayment}
-                      className="mt-4 px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition"
+                      className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-lg"
                     >
                       Pay ₹149
                     </button>
                   </div>
-
                 </div>
               )}
             </div>
           )}
 
-          {/* DOWNLOAD BUTTONS */}
+          {/* DOWNLOAD */}
           {paid && (
             <div className="mt-6 flex gap-4">
               <button
                 onClick={handlePDFDownload}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl transition"
+                className="w-full bg-green-600 text-white py-3 rounded-xl"
               >
                 Download PDF
               </button>
 
               <button
                 onClick={handleWordDownload}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition"
+                className="w-full bg-blue-600 text-white py-3 rounded-xl"
               >
                 Download Word
               </button>
             </div>
           )}
-
         </div>
       </div>
     </div>
