@@ -178,7 +178,7 @@ export default function Home() {
 
           <h3 className="text-xl font-semibold">Simple Pricing</h3>
 
-          <p className="text-5xl font-bold mt-4">₹149</p>
+          <p className="text-5xl font-bold mt-4">₹9</p>
 
           <p className="text-gray-500 mt-2">per document</p>
 
