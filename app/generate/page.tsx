@@ -21,14 +21,17 @@ export default function GeneratePage() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [paid, setPaid] = useState(false);
 
-  // 🔥 Clean markdown
+  // 🔥 CLEAN MARKDOWN
   const cleanPolicy = (text: string) => {
-    return text.replace(/\*\*/g, "").replace(/#/g, "");
+    return text
+      .replace(/\*\*/g, "")
+      .replace(/#/g, "")
+      .replace(/\n{2,}/g, "\n\n");
   };
 
   const formattedPolicy = cleanPolicy(policy);
 
-  // 🔥 Generate
+  // 🔥 GENERATE
   const handleGenerate = async () => {
     if (!website) return alert("Enter website name");
 
@@ -37,22 +40,27 @@ export default function GeneratePage() {
     setShowPaywall(false);
     setPaid(false);
 
-    const res = await fetch("/api/generate-policy", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ website, businessType, country }),
-    });
+    try {
+      const res = await fetch("/api/generate-policy", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ website, businessType, country }),
+      });
 
-    const data = await res.json();
-    setPolicy(data.policy);
+      const data = await res.json();
+      setPolicy(data.policy);
 
-    setTimeout(() => setShowPaywall(true), 1000);
+      setTimeout(() => setShowPaywall(true), 1000);
+    } catch {
+      alert("Error generating policy");
+    }
+
     setLoading(false);
   };
 
-  // 💳 Payment
+  // 💳 PAYMENT
   const handlePayment = async () => {
     if (!(window as any).Razorpay) {
       alert("Refresh page");
@@ -82,12 +90,11 @@ export default function GeneratePage() {
     rzp.open();
   };
 
-  // 📄 PDF (LAWYER STYLE)
+  // 📄 PREMIUM PDF
   const handlePDFDownload = () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Header
     doc.setFillColor(0, 0, 0);
     doc.rect(0, 0, pageWidth, 20, "F");
 
@@ -95,7 +102,6 @@ export default function GeneratePage() {
     doc.setFontSize(14);
     doc.text("LegalFormat", 10, 13);
 
-    // Title
     doc.setTextColor(0, 0, 0);
     doc.setFont("Times", "Bold");
     doc.setFontSize(18);
@@ -122,19 +128,10 @@ export default function GeneratePage() {
       y += split.length * 6;
     });
 
-    // Footer
-    const pageCount = doc.getNumberOfPages();
-
-    for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setFontSize(10);
-      doc.text(`Page ${i}`, pageWidth - 20, 290);
-    }
-
     doc.save("LegalFormat-Privacy-Policy.pdf");
   };
 
-  // 📄 WORD (LAWYER STYLE)
+  // 📄 PREMIUM WORD
   const handleWordDownload = async () => {
     const doc = new Document({
       sections: [
@@ -176,12 +173,14 @@ export default function GeneratePage() {
         <h1 className="text-3xl font-bold text-blue-600">
           LegalFormat
         </h1>
-        <a href="/" className="text-gray-500">← Back</a>
+        <a href="/" className="text-gray-500 hover:text-black">
+          ← Back
+        </a>
       </div>
 
       <div className="grid md:grid-cols-2 gap-10">
 
-        {/* FORM */}
+        {/* LEFT */}
         <div className="bg-white p-8 rounded-3xl shadow-xl border">
           <h2 className="text-xl font-semibold mb-4">
             Generate Privacy Policy
@@ -211,13 +210,19 @@ export default function GeneratePage() {
           </button>
         </div>
 
-        {/* PREVIEW */}
+        {/* RIGHT */}
         <div className="bg-white p-8 rounded-3xl shadow-xl border relative">
+
+          {!formattedPolicy && (
+            <p className="text-gray-400">
+              Your policy will appear here...
+            </p>
+          )}
 
           {formattedPolicy.split("\n").map((line, i) => {
             if (/^\d+\./.test(line)) {
               return (
-                <p key={i} className="font-semibold mt-4">
+                <p key={i} className="font-semibold text-lg mt-4">
                   {line}
                 </p>
               );
@@ -230,26 +235,38 @@ export default function GeneratePage() {
             );
           })}
 
+          {/* PAYWALL */}
           {showPaywall && !paid && (
-            <div className="absolute bottom-0 w-full bg-white p-6 text-center">
-              <button onClick={handlePayment} className="bg-orange-500 text-white px-6 py-2 rounded-lg">
+            <div className="absolute bottom-0 w-full bg-white p-6 text-center border-t">
+              <button
+                onClick={handlePayment}
+                className="bg-orange-500 text-white px-6 py-2 rounded-lg"
+              >
                 Pay ₹149
               </button>
             </div>
           )}
 
+          {/* DOWNLOAD */}
           {paid && (
             <div className="mt-6 flex gap-4">
-              <button onClick={handlePDFDownload} className="w-full bg-green-600 text-white py-3 rounded-xl">
-                PDF
+              <button
+                onClick={handlePDFDownload}
+                className="w-full bg-green-600 text-white py-3 rounded-xl"
+              >
+                Download PDF
               </button>
-              <button onClick={handleWordDownload} className="w-full bg-blue-600 text-white py-3 rounded-xl">
-                Word
+
+              <button
+                onClick={handleWordDownload}
+                className="w-full bg-blue-600 text-white py-3 rounded-xl"
+              >
+                Download Word
               </button>
             </div>
           )}
-        </div>
 
+        </div>
       </div>
     </div>
   );
