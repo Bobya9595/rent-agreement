@@ -1,53 +1,80 @@
 const handlePDFDownload = () => {
   const doc = new jsPDF();
-  const width = doc.internal.pageSize.getWidth();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
-  // Header
-  doc.setFillColor(0, 0, 0);
-  doc.rect(0, 0, width, 20, "F");
+  let y = 45;
+  let pageNumber = 1;
 
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(14);
-  doc.text("LegalFormat", 10, 13);
+  // 🔷 Function to draw header
+  const drawHeader = () => {
+    doc.setFillColor(0, 0, 0);
+    doc.rect(0, 0, pageWidth, 20, "F");
 
-  // Title
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(12);
+    doc.text("LegalFormat", 10, 13);
+  };
+
+  // 🔷 Function to draw footer
+  const drawFooter = () => {
+    doc.setFontSize(10);
+    doc.setTextColor(150);
+    doc.text(
+      `Page ${pageNumber}`,
+      pageWidth - 20,
+      pageHeight - 10
+    );
+  };
+
+  // 🔷 First Page Header
+  drawHeader();
+
+  // 🔷 Title
   doc.setTextColor(0, 0, 0);
   doc.setFont("Times", "Bold");
   doc.setFontSize(18);
-  doc.text(`Privacy Policy for ${website}`, width / 2, 30, {
+  doc.text(`Privacy Policy for ${website}`, pageWidth / 2, 30, {
     align: "center",
   });
 
-  // Subline (PERSONALIZATION BOOST)
+  // 🔷 Subline
   doc.setFont("Times", "Normal");
   doc.setFontSize(10);
   doc.text(
     `This document is customized for ${website}`,
-    width / 2,
+    pageWidth / 2,
     36,
     { align: "center" }
   );
 
-  let y = 45;
-
+  // 🔷 Content
   formattedPolicy.split("\n").forEach((line) => {
-    if (y > 280) {
+    if (y > pageHeight - 20) {
+      drawFooter();
       doc.addPage();
-      y = 20;
+      pageNumber++;
+
+      drawHeader();
+      y = 25;
     }
 
     if (/^\d+\./.test(line)) {
       doc.setFont("Times", "Bold");
       doc.setFontSize(13);
+      y += 4;
     } else {
       doc.setFont("Times", "Normal");
       doc.setFontSize(11);
     }
 
     const split = doc.splitTextToSize(line, 180);
-    doc.text(split, 10, y);
+    doc.text(split, 15, y);
     y += split.length * 6;
   });
+
+  // 🔷 Final Footer
+  drawFooter();
 
   doc.save(`${website}-privacy-policy.pdf`);
 };
