@@ -21,7 +21,7 @@ export default function Home() {
 
         {/* GLOW BACKGROUND */}
         <div className="absolute inset-0 -z-10 flex justify-center">
-          <div className="w-[600px] h-[600px] bg-blue-500/20 blur-3xl rounded-full"></div>
+          <div className="w-[650px] h-[650px] bg-blue-500/20 blur-3xl rounded-full"></div>
         </div>
 
         <h1 className="text-5xl md:text-6xl font-bold max-w-4xl mx-auto leading-tight">
@@ -54,17 +54,53 @@ export default function Home() {
         </p>
       </section>
 
-      {/* HERO CARD (IMPORTANT FIX FOR BLANK LOOK) */}
+      {/* PRODUCT PREVIEW (KEY SECTION) */}
       <section className="mt-16 flex justify-center px-6">
         <div className="bg-white border shadow-2xl rounded-3xl p-6 w-full max-w-4xl">
 
-          <div className="flex justify-between text-sm text-gray-500 mb-4">
-            <span>Privacy Policy Preview</span>
-            <span>AI Generated</span>
+          {/* HEADER */}
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-sm text-gray-500">
+              Privacy Policy Preview
+            </span>
+
+            <span className="text-xs px-3 py-1 bg-green-100 text-green-600 rounded-full">
+              AI Generated
+            </span>
           </div>
 
-          <div className="h-[220px] bg-gradient-to-b from-gray-100 to-white rounded-xl flex items-center justify-center text-gray-400">
-            Document Preview UI
+          {/* DOCUMENT PREVIEW */}
+          <div className="h-[260px] overflow-hidden rounded-xl border bg-white p-4 text-left text-sm text-gray-700 relative">
+
+            <p className="font-semibold text-gray-900">
+              Privacy Policy
+            </p>
+
+            <p className="text-xs text-gray-400 mt-1">
+              Effective Date: June 2024
+            </p>
+
+            <hr className="my-2" />
+
+            <p className="font-semibold">1. Introduction</p>
+            <p className="text-gray-600 mt-1">
+              We value your privacy and are committed to protecting your personal
+              information in accordance with applicable Indian laws.
+            </p>
+
+            <p className="font-semibold mt-3">2. Information We Collect</p>
+            <p className="text-gray-600 mt-1">
+              We may collect personal data such as name, email, and usage data
+              when you interact with our website.
+            </p>
+
+            <p className="font-semibold mt-3">3. Use of Information</p>
+            <p className="text-gray-600 mt-1">
+              The collected data is used to improve services and enhance user experience.
+            </p>
+
+            {/* FADE */}
+            <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white to-transparent"></div>
           </div>
 
         </div>
@@ -96,7 +132,7 @@ export default function Home() {
 
       </section>
 
-      {/* STATS */}
+      {/* TRUST / STATS */}
       <section className="mt-28 text-center">
         <div className="flex justify-center gap-12 text-gray-700">
           <div>
@@ -144,7 +180,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* FINAL CTA */}
       <section className="mt-32 mb-20 px-6 text-center">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-3xl p-12 shadow-xl">
           
