@@ -9,16 +9,13 @@ export default function GeneratePage() {
   const [website, setWebsite] = useState("");
   const [businessType, setBusinessType] = useState("SaaS");
   const [country, setCountry] = useState("India");
-  const [collectsData, setCollectsData] = useState("Yes");
-  const [usesCookies, setUsesCookies] = useState("Yes");
-  const [thirdParty, setThirdParty] = useState("Google Analytics");
 
   const [policy, setPolicy] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [paid, setPaid] = useState(false);
 
-  // 🔥 Generate Policy
+  // 🔥 Generate
   const handleGenerate = async () => {
     if (!website) return alert("Enter website name");
 
@@ -27,37 +24,29 @@ export default function GeneratePage() {
     setShowPaywall(false);
     setPaid(false);
 
-    try {
-      const res = await fetch("/api/generate-policy", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          website,
-          businessType,
-          country,
-          collectsData,
-          usesCookies,
-          thirdParty,
-        }),
-      });
+    const res = await fetch("/api/generate-policy", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        website,
+        businessType,
+        country,
+      }),
+    });
 
-      const data = await res.json();
-      setPolicy(data.policy);
+    const data = await res.json();
+    setPolicy(data.policy);
 
-      setTimeout(() => setShowPaywall(true), 1000);
-    } catch {
-      alert("Error generating policy");
-    }
-
+    setTimeout(() => setShowPaywall(true), 1000);
     setLoading(false);
   };
 
   // 💳 Payment
   const handlePayment = async () => {
     if (!(window as any).Razorpay) {
-      alert("Payment system not loaded. Refresh page.");
+      alert("Refresh page");
       return;
     }
 
@@ -72,17 +61,12 @@ export default function GeneratePage() {
       amount: order.amount,
       currency: order.currency,
       name: "LegalFormat",
-      description: "Download Policy",
+      description: "Policy Download",
       order_id: order.id,
 
       handler: function () {
-        alert("Payment Successful 🎉");
         setShowPaywall(false);
         setPaid(true);
-      },
-
-      theme: {
-        color: "#2563eb",
       },
     };
 
@@ -90,31 +74,46 @@ export default function GeneratePage() {
     rzp.open();
   };
 
-  // 📄 PDF Download
+  // 📄 Premium PDF
   const handlePDFDownload = () => {
     const doc = new jsPDF();
 
-    doc.setFont("Times", "Bold");
+    // Header
+    doc.setFillColor(37, 99, 235);
+    doc.rect(0, 0, 210, 25, "F");
+
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(18);
-    doc.text("Privacy Policy", 10, 15);
+    doc.text("LegalFormat", 10, 15);
 
-    doc.setFont("Times", "Normal");
-    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(14);
+    doc.text("Privacy Policy", 10, 35);
 
+    doc.setFontSize(11);
     const lines = doc.splitTextToSize(policy, 180);
-    doc.text(lines, 10, 30);
+    doc.text(lines, 10, 45);
 
     doc.save("LegalFormat-Policy.pdf");
   };
 
-  // 📄 Word Download
+  // 📄 Premium Word
   const handleWordDownload = async () => {
     const doc = new Document({
       sections: [
         {
-          children: policy
-            .split("\n")
-            .map((line) => new Paragraph(line)),
+          children: [
+            new Paragraph({
+              text: "Privacy Policy",
+              heading: "Heading1",
+            }),
+            ...policy.split("\n").map(
+              (line) =>
+                new Paragraph({
+                  text: line,
+                })
+            ),
+          ],
         },
       ],
     });
@@ -124,97 +123,67 @@ export default function GeneratePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-6 md:p-12">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-950 to-black text-white p-6 md:p-12">
 
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-10">
-        <h1 className="text-2xl font-bold text-blue-700">
+      <div className="flex justify-between items-center mb-12">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
           LegalFormat
         </h1>
 
-        <a href="/" className="text-sm text-gray-500 hover:text-black">
+        <a href="/" className="text-sm text-gray-400 hover:text-white">
           ← Back
         </a>
       </div>
 
       <div className="grid md:grid-cols-2 gap-10">
 
-        {/* LEFT FORM */}
-        <div className="bg-white p-8 rounded-2xl shadow-md">
+        {/* LEFT PANEL */}
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl">
+
           <h2 className="text-xl font-semibold mb-4">
             Generate Privacy Policy
           </h2>
 
-          <p className="text-sm text-gray-500 mb-4">
-            Fill details to generate a customized policy
-          </p>
-
           <input
             type="text"
             placeholder="Website Name"
-            className="w-full border p-3 rounded-xl"
+            className="w-full bg-white/10 border border-white/20 p-3 rounded-xl mb-3"
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
           />
 
-          {/* NEW INPUTS */}
           <select
-            className="w-full border p-3 rounded-xl mt-3"
+            className="w-full bg-white/10 p-3 rounded-xl mb-3"
             value={businessType}
             onChange={(e) => setBusinessType(e.target.value)}
           >
             <option>SaaS</option>
             <option>E-commerce</option>
             <option>Blog</option>
-            <option>Portfolio</option>
           </select>
 
           <select
-            className="w-full border p-3 rounded-xl mt-3"
+            className="w-full bg-white/10 p-3 rounded-xl mb-3"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
           >
             <option>India</option>
             <option>USA</option>
-            <option>Global</option>
           </select>
-
-          <select
-            className="w-full border p-3 rounded-xl mt-3"
-            value={collectsData}
-            onChange={(e) => setCollectsData(e.target.value)}
-          >
-            <option>Collects Personal Data: Yes</option>
-            <option>Collects Personal Data: No</option>
-          </select>
-
-          <select
-            className="w-full border p-3 rounded-xl mt-3"
-            value={usesCookies}
-            onChange={(e) => setUsesCookies(e.target.value)}
-          >
-            <option>Uses Cookies: Yes</option>
-            <option>Uses Cookies: No</option>
-          </select>
-
-          <input
-            type="text"
-            placeholder="Third-party services (e.g. Google Analytics)"
-            className="w-full border p-3 rounded-xl mt-3"
-            value={thirdParty}
-            onChange={(e) => setThirdParty(e.target.value)}
-          />
 
           <button
             onClick={handleGenerate}
-            className="mt-6 w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700"
+            className="mt-4 w-full bg-gradient-to-r from-blue-500 to-indigo-600 py-3 rounded-xl font-semibold hover:scale-105 transition"
           >
             {loading ? "Generating..." : "Generate Policy"}
           </button>
+
         </div>
 
-        {/* RIGHT PREVIEW */}
-        <div className="bg-white p-8 rounded-2xl shadow-md relative">
+        {/* RIGHT PANEL */}
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl relative">
+
           <h2 className="text-xl font-semibold mb-4">
             Live Preview
           </h2>
@@ -227,14 +196,16 @@ export default function GeneratePage() {
 
           {policy && (
             <div className="relative max-h-[500px] overflow-hidden">
-              <pre className="whitespace-pre-wrap text-sm text-gray-800">
+
+              <div className="text-sm text-gray-200 whitespace-pre-wrap leading-relaxed">
                 {policy}
-              </pre>
+              </div>
 
               {/* PAYWALL */}
               {showPaywall && !paid && (
-                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-white to-transparent flex items-end justify-center">
-                  <div className="bg-white p-5 rounded-xl shadow-xl text-center mb-4 border">
+                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent flex items-end justify-center">
+
+                  <div className="bg-white text-black p-6 rounded-2xl shadow-xl text-center">
                     <p className="font-semibold text-lg">
                       🔒 Unlock Full Policy
                     </p>
@@ -246,6 +217,7 @@ export default function GeneratePage() {
                       Pay ₹149
                     </button>
                   </div>
+
                 </div>
               )}
             </div>
@@ -256,19 +228,20 @@ export default function GeneratePage() {
             <div className="mt-6 flex gap-4">
               <button
                 onClick={handlePDFDownload}
-                className="w-full bg-green-600 text-white py-3 rounded-xl"
+                className="w-full bg-green-500 py-3 rounded-xl font-semibold"
               >
                 Download PDF
               </button>
 
               <button
                 onClick={handleWordDownload}
-                className="w-full bg-blue-600 text-white py-3 rounded-xl"
+                className="w-full bg-blue-500 py-3 rounded-xl font-semibold"
               >
                 Download Word
               </button>
             </div>
           )}
+
         </div>
       </div>
     </div>
